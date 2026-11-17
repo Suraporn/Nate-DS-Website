@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nate | Data Science Portfolio</title>
+<meta name="description" content="Data Science Portfolio of Nate Puangpanbut — Data Scientist, ML Engineer, Control Systems.">
+<meta property="og:title" content="Nate | Data Science Portfolio">
+<meta property="og:description" content="Data Science Portfolio of Nate Puangpanbut — Data Scientist, ML Engineer, Control Systems.">
+<meta property="og:image" content="https://suraporn.github.io/Nate-DS-Website/images/profile.jpg">
+<link rel="icon" href="images/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css?v=2">
+</head>
+<body>
+<header class="site"><div class="wrap">
+<a class="brand" href="home.html">Nate <span>Puangpanbut</span></a>
+<nav><a href="home.html" class=active>Home</a><a href="projects.html">Projects</a><a href="resume.html">Resume</a><a href="contact.html">Contact</a></nav></div></header>
+
+<main class="wrap">
+<section class="hero">
+<div>
+<div class="eyebrow">Senior Data Scientist · Forecasting · ML &amp; LLMs</div>
+<h1>Hi, I'm Nate.</h1>
+<p class="lead">I build forecasting, optimization and ML systems that hold up in production. 10+ years across industrial, supply-chain and data-driven teams, with more than <b>$15.37M</b> in savings and profit delivered.</p>
+<div class="stats">
+<div><b>10+ yrs</b><span>industry experience</span></div>
+<div><b>$15.37M+</b><span>savings &amp; profit delivered</span></div>
+<div><b>UBC · USC</b><span>MDS (GPA 4.00) · MSc EE</span></div>
+</div>
+<div class="btns"><a class="btn primary" href="projects.html">See my work</a><a class="btn" href="files/resume.pdf" target="_blank">Download résumé</a></div>
+<div class="socials"><a href="https://www.linkedin.com/in/suraporn/" target="_blank" rel="noopener">LinkedIn ↗</a><a href="https://github.com/Suraporn" target="_blank" rel="noopener">GitHub ↗</a><a href="https://medium.com/@suraporn83" target="_blank" rel="noopener">Medium ↗</a><a href="mailto:nate.puangpanbut@gmail.com">Email</a></div>
+</div>
+<div class="avatar"><span>NP</span><img src="images/profile.jpg" alt="Nate Puangpanbut" onerror="this.remove()"></div>
+</section>
+
+<section>
+<h2>About</h2>
+<p class="sub" style="max-width:760px">I'm a Vancouver-based data scientist. I currently work as a Data Analyst with Meta (via Tundra Technical Solutions), evaluating and improving ML/LLM-powered analytics. Before that I built forecasting models for non-stationary markets at Eon Labs and spent eight years at SCG Chemicals leading data science teams on demand forecasting, supply-chain optimization and anomaly detection. I hold a Master of Data Science from UBC and an MSc in Electrical Engineering from USC, and I started my career in instrumentation and process control, so I care about models that work in the real world.</p>
+</section>
+
+<section>
+<h2>Selected projects</h2>
+<p class="sub">Write-ups on deployment, modelling and a few fun experiments.</p>
+<div class="grid"><a class="card proj" href="post/operationalizing-machine-learning-models-with-gcp-vertexai.html">
+<div class="thumb"><img src="images/projects/operationalizing-machine-learning-models-with-gcp-vertexai.jpg" alt="Operationalizing ML Models with GCP Vertex AI" loading="lazy" onerror="this.remove()"></div>
+<div class="body"><div class="tag">MLOps</div><h3>Operationalizing ML Models with GCP Vertex AI</h3><p>Taking models from notebook to production on Google Cloud Vertex AI, so the organization actually gets value from them.</p></div></a>
+<a class="card proj" href="post/deploy-ml-models-with-docker.html">
+<div class="thumb"><img src="images/projects/deploy-ml-models-with-docker.png" alt="Deploy ML Models with Docker" loading="lazy" onerror="this.remove()"></div>
+<div class="body"><div class="tag">Model Deployment</div><h3>Deploy ML Models with Docker</h3><p>Packaging a scikit-learn sentiment model and its Flask API into a portable container.</p></div></a>
+<a class="card proj" href="post/deploy-ml-models-with-flask.html">
+<div class="thumb"><img src="images/projects/deploy-ml-models-with-flask.png" alt="Deploy ML Models with Flask" loading="lazy" onerror="this.remove()"></div>
+<div class="body"><div class="tag">Model Deployment</div><h3>Deploy ML Models with Flask</h3><p>Serving a trained model behind a lightweight Flask REST API.</p></div></a>
+<a class="card proj" href="post/deploy-ml-models-with-fastapi.html">
+<div class="thumb"><img src="images/projects/deploy-ml-models-with-fastapi.png" alt="Deploy ML Models with FastAPI" loading="lazy" onerror="this.remove()"></div>
+<div class="body"><div class="tag">Model Deployment</div><h3>Deploy ML Models with FastAPI</h3><p>Building a fast, typed prediction API with FastAPI, because a model only matters once it is deployed.</p></div></a>
+<a class="card proj" href="post/techniques-for-tuning-classification-models-with-imbalanced-dataset.html">
+<div class="thumb"><img src="images/projects/techniques-for-tuning-classification-models-with-imbalanced-dataset.jpg" alt="Tuning Classifiers on Imbalanced Data" loading="lazy" onerror="this.remove()"></div>
+<div class="body"><div class="tag">Machine Learning</div><h3>Tuning Classifiers on Imbalanced Data</h3><p>Practical techniques for classification problems where one class vastly outnumbers the other.</p></div></a>
+<a class="card proj" href="post/rating-prediction-of-airbnb-listing.html">
+<div class="thumb"><img src="images/projects/rating-prediction-of-airbnb-listing.jpg" alt="Rating Prediction of Airbnb Listings" loading="lazy" onerror="this.remove()"></div>
+<div class="body"><div class="tag">Machine Learning</div><h3>Rating Prediction of Airbnb Listings</h3><p>Predicting how popular an Airbnb listing will be from its features.</p></div></a>
+</div>
+<p style="margin-top:24px"><a href="projects.html">All projects →</a></p>
+</section>
+
+<section id="certs">
+<h2>Certifications</h2>
+<p class="sub">Courses and credentials.</p>
+<div class="certs"><img src="images/certs/cert-1.jpg" alt="Certificate" loading="lazy" onerror="this.remove()"><img src="images/certs/cert-2.jpg" alt="Certificate" loading="lazy" onerror="this.remove()"><img src="images/certs/cert-3.jpg" alt="Certificate" loading="lazy" onerror="this.remove()"><img src="images/certs/cert-4.jpg" alt="Certificate" loading="lazy" onerror="this.remove()"><img src="images/certs/cert-5.jpg" alt="Certificate" loading="lazy" onerror="this.remove()"><img src="images/certs/cert-6.jpg" alt="Certificate" loading="lazy" onerror="this.remove()"><img src="images/certs/cert-7.png" alt="Certificate" loading="lazy" onerror="this.remove()"><img src="images/certs/cert-8.jpg" alt="Certificate" loading="lazy" onerror="this.remove()"></div>
+</section>
+<script>addEventListener('load',()=>{if(!document.querySelector('#certs img'))document.getElementById('certs').remove()})</script>
+</main>
+<footer class="site"><div class="wrap">
+<div>© <span id="yr"></span> Nate Puangpanbut</div>
+<div><a href="mailto:nate.puangpanbut@gmail.com">nate.puangpanbut@gmail.com</a> · <a href="https://www.linkedin.com/in/suraporn/" target="_blank" rel="noopener">LinkedIn</a> · <a href="https://github.com/Suraporn" target="_blank" rel="noopener">GitHub</a> · <a href="https://medium.com/@suraporn83" target="_blank" rel="noopener">Medium</a> · <a href="https://www.instagram.com/boy.yub/" target="_blank" rel="noopener">Instagram</a></div>
+</div></footer>
+<script>document.getElementById('yr').textContent=new Date().getFullYear()</script>
+</body></html>
