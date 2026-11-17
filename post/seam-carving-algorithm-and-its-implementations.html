@@ -7,7 +7,7 @@
 <meta name="description" content="Content-aware image resizing with dynamic programming.">
 <meta property="og:title" content="Seam Carving and Its Implementations | Nate Puangpanbut">
 <meta property="og:description" content="Content-aware image resizing with dynamic programming.">
-<meta property="og:image" content="https://nate-p.com/images/og.png">
+<meta property="og:image" content="https://suraporn.github.io/Nate-DS-Website/images/profile.jpg">
 <link rel="icon" href="../images/favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
@@ -221,7 +221,7 @@
             plt.imshow(image)
         
         return image</code></pre>
-<p><a href="https://www.nate-p.com/projects/hashtags/1" target="_blank" rel="noopener">#1</a> Implement with Recursive Programming</p>
+<p>#1 Implement with Recursive Programming</p>
 <p>One easy and intuitive way to implement the seam carving algorithm is to recursively calculate the seam path by checking the energy matrix from every pixel, this is a brute force solution that is expensive and slow. The code below shows the implementation by having the find_vertical_seam() that recursively calls the fvs() function to find and update the seam path. </p>
 <pre><code>class SeamCarveRecursive(SeamCarve):
     
@@ -317,7 +317,7 @@ plt.xlabel('Height size')
 plt.ylabel('Time consumed')
 plt.show()</code></pre>
 <figure><img src="../images/posts/seam-carving-algorithm-and-its-implementations-3.jpg" alt="" loading="lazy"></figure>
-<p><a href="https://www.nate-p.com/projects/hashtags/2" target="_blank" rel="noopener">#2</a> Implement with Integer Linear Programming (ILP)</p>
+<p>#2 Implement with Integer Linear Programming (ILP)</p>
 <p>Another method to implement the algorithm is to apply the linear programming. In many case, if we know that our problem is linear, we can then construct the objective function, constraints, and formulate the linear optimization problem. The code below shows the implementation using PuLP package. </p>
 <pre><code>class SeamCarveILP(SeamCarve):
 
@@ -382,7 +382,7 @@ plt.show()</code></pre>
         return seam</code></pre>
 <figure><img src="../images/posts/seam-carving-algorithm-and-its-implementations-4.jpg" alt="" loading="lazy"></figure>
 <p>Testing the ILP Seam Carving algorithm with the same procedure, we found that the ILP can work through size=35 while working under 10 seconds.</p>
-<p><a href="https://www.nate-p.com/projects/hashtags/3" target="_blank" rel="noopener">#3</a> Implement with Dynamic Programming (DP)</p>
+<p>#3 Implement with Dynamic Programming (DP)</p>
 <p>In the first solution, we use a brute-force method of the recursive programming, while in the second solution, we tried to improve it by applying the linear optimization. However, if we deeply understand how our algorithm works, we may be able to come up with the way to make it more efficient. </p>
 <p>In this seam carving algorithm, we know that a seam is a connection of the adjacent pixels nearby it, therefore, we can directly limit the number of calculation to these adjacent neighbors. This will tremendously reduce the calculation leading to the improvement in speed, and this is the main idea of the Dynamic Programming.</p>
 <pre><code>class SeamCarveDP(SeamCarve):
@@ -433,7 +433,7 @@ plt.show()</code></pre>
         return seam - 1 </code></pre>
 <figure><img src="../images/posts/seam-carving-algorithm-and-its-implementations-5.png" alt="" loading="lazy"></figure>
 <p>After testing this Dynamic Programming Seam Carving algorithm, we found an interesting result that the algorithm could run to size of 4500 while running under 10 seconds which is greatly improved compared with the Recursive and Linear Programming method. The time complexity of this method is only <em>O(N*M)</em>.</p>
-<p><a href="https://www.nate-p.com/projects/hashtags/4" target="_blank" rel="noopener">#4</a> Implement with Code Vectorization</p>
+<p>#4 Implement with Code Vectorization</p>
 <p>All three methods above works by improving the algorithms, in the real world, we might not be able to come up with a new algorithm more often. On the other hands, implementation of the algorithm is an aspect that we need to focus.</p>
 <p>For example, in the real world, to run this algorithm, we would prefer others faster programming languages such as C++ or Julia, but we sometimes do not have much choice. If we need to stick with Python, one thing we could do is that to check whether we have better version of code to use, and yes, we have the vectorized function such as Numpy that could help speeding up the code. In this case, we can appl<strong>y </strong>shifting operation<strong> </strong>and np.min() to find the lowest energy path as below, </p>
 <figure><img src="../images/posts/seam-carving-algorithm-and-its-implementations-6.png" alt="" loading="lazy"></figure>

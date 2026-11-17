@@ -7,7 +7,7 @@
 <meta name="description" content="Pitfalls to avoid when pulling, joining and manipulating data across tables with SQL.">
 <meta property="og:title" content="Common Mistakes in SQL | Nate Puangpanbut">
 <meta property="og:description" content="Pitfalls to avoid when pulling, joining and manipulating data across tables with SQL.">
-<meta property="og:image" content="https://nate-p.com/images/og.png">
+<meta property="og:image" content="https://suraporn.github.io/Nate-DS-Website/images/profile.jpg">
 <link rel="icon" href="../images/favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
@@ -50,7 +50,7 @@ port = login['port']</code></pre>
 <p>    Connect to the database (One at a time)</p>
 <pre><code>%sql postgresql://{username}:{password}@{host}:{port}/imdb
 %sql postgresql://{username}:{password}@{host}:{port}/world</code></pre>
-<h2><strong><a href="https://www.nate-p.com/projects/hashtags/1" target="_blank" rel="noopener">#1</a> : Miss up clause orders and execution orders</strong></h2>
+<h2><strong>#1 : Miss up clause orders and execution orders</strong></h2>
 <p>If you try to run a query below to see the result of movies that have a number of votes more than 1000, you will find an error indicating that it could not find the column "NumberOfVotes" that we aliased in SELECT statement.</p>
 <pre><code>%%sql
 
@@ -103,7 +103,7 @@ WHERE
     LIMIT</code></pre>
 <p>Therefore, in the query example above, the SQL will execute FROM first, then WHERE, and it will throw an error since it does not know "NumberOfVotes" column we derived it in SELECT clause. The SELECT clause is executed later than WHERE.</p>
 <p>Therefore, do keep in mind with the difference of these two orders because you might get struck a long time with this tiny mistake, or even you got the wrong result and you don't know it!</p>
-<h2><strong><a href="https://www.nate-p.com/projects/hashtags/2" target="_blank" rel="noopener">#2</a> : Not beware of the logical statement</strong></h2>
+<h2><strong>#2 : Not beware of the logical statement</strong></h2>
 <p>Many times, we need to filter some conditions to get the result we want, but we sometimes have a weird or wrong query result even though the statement looks good. Take a look at the query below that we want to have a result of movies that was published during 2010 and 2020 with a rating &gt; 8 and number of votes &gt; 1000,  </p>
 <pre><code>%%sql
 
@@ -143,7 +143,7 @@ LIMIT 15
 ;</code></pre>
 <figure><img src="../images/posts/common-mistakes-in-sql-4.jpg" alt="" loading="lazy"></figure>
 <p>BOOM.. we got what we want!</p>
-<h2><strong><a href="https://www.nate-p.com/projects/hashtags/3" target="_blank" rel="noopener">#3</a> : Combine aggregration</strong> to non-aggregration data</h2>
+<h2><strong>#3 : Combine aggregration</strong> to non-aggregration data</h2>
 <p>Again, sometimes we might want to run a simple average value of a certain column, so we use aggregation functions, and yeah it look great as below,</p>
 <pre><code>%%sql
 
