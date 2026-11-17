@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tuning Classifiers on Imbalanced Data | Nate Puangpanbut</title>
+<meta name="description" content="Practical techniques for classification problems where one class vastly outnumbers the other.">
+<meta property="og:title" content="Tuning Classifiers on Imbalanced Data | Nate Puangpanbut">
+<meta property="og:description" content="Practical techniques for classification problems where one class vastly outnumbers the other.">
+<meta property="og:image" content="https://nate-p.com/images/og.png">
+<link rel="icon" href="../images/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<header class="site"><div class="wrap">
+<a class="brand" href="../index.html">Nate <span>Puangpanbut</span></a>
+<nav><a href="../index.html">Home</a><a href="../projects.html" class=active>Projects</a><a href="../resume.html">Resume</a><a href="../contact.html">Contact</a></nav></div></header>
+
+<main class="wrap"><article>
+<a href="../projects.html">← All projects</a>
+<div class="eyebrow" style="margin-top:28px">Machine Learning</div>
+<h1>Tuning Classifiers on Imbalanced Data</h1>
+<div class="meta">Nate Puangpanbut · Feb 15, 2024</div>
+<!-- PASTE ARTICLE BODY BELOW. Use <h2>, <p>, <pre><code>...</code></pre>, <img src="../images/..."> -->
+<p>When working on classification models, we usually found that our data have a difference number of members among each classes, some classes may have a majority while some classes have a low number of members, it is an imbalanced dataset. On this blog, I will reveal some useful techniques for tuning our classification models to have better result while working with the imbalanced dataset.</p>
+<figure><img src="../images/posts/techniques-for-tuning-classification-models-with-imbalanced-dataset-1.jpg" alt="" loading="lazy"></figure>
+<p>Choosing the right Classification Matrices</p>
+<p>When working on classification problems, there are several matrices that can be derived from four fundamental indexes such as True Positive(TP), True Negative(TN), False Positive(FP), and False Negative(FN), therefore, it is important to understand all of these matrices, so we can choose the proper one for our project. </p>
+<ul><li><p>Precision: The ability to correctly identify positive predicted instances.</p>
+</li>
+</ul>
+<figure><img src="../images/posts/techniques-for-tuning-classification-models-with-imbalanced-dataset-2.png" alt="" loading="lazy"></figure>
+<ul><li><p>Recall: The ability to correctly identify actual positive instances. It is also known as True Positive Rate(TPR) or Sensitivity.</p>
+</li>
+</ul>
+<figure><img src="../images/posts/techniques-for-tuning-classification-models-with-imbalanced-dataset-3.png" alt="" loading="lazy"></figure>
+<ul><li><p>F1 Score: The combination(A harmonic mean) of Precision and Recall that gives us a one score value which could be used in hyperparameter optimization.</p>
+</li>
+</ul>
+<figure><img src="../images/posts/techniques-for-tuning-classification-models-with-imbalanced-dataset-4.png" alt="" loading="lazy"></figure>
+<ul><li><p>F1 Beta: The user-define weight of Precision and Recall version of F1 Score.</p>
+</li>
+</ul>
+<figure><img src="../images/posts/techniques-for-tuning-classification-models-with-imbalanced-dataset-5.png" alt="" loading="lazy"></figure>
+<p>Choosing the appropriate metric for this problem will require a full understanding of the problem statement, the project background, the objective of the project, and some related policies of the company. Not only we will be able to develop and deliver the work correctly, efficiently, and sustainably, but most of these metrics are traded off with each other and have different effects on the problem differently. Missing a certain aspect will have a different cost to the project. </p>
+<p>For example, in a fraud prediction problem where a bank would like to predict any fraud transactions, the bank would concerned and would like to have a high Recall value rather than a Precision because they do not want to miss any actual fraud transactions if they miss detecting any fraud transactions, it would cost huge dollars to the bank, but if they miss classify some safe transactions by predicted as fraud, they will need to spend little cost inspecting them. This example shows how each metric has different impacts on a problem.</p>
+<p><strong>Techniques for Imbalanced Dataset</strong></p>
+<p>Understanding our problem is important, understanding our data is important as well. Because of the nature of several data types, it will have special characters that we need to know, we therefore can apply the right solution to the dataset.</p>
+<p>And yes, most of the datasets for classification problems will be imbalanced datasets. For instance, credit card fraud prediction data, spam mail classification data, or machine failure data. It means that we have some majority classes having multiple observations while some classes have just few instances.</p>
+<p>We can easily spot imbalanced datasets just by running value counts of each class or checking the result of a dummy classification model whether it has major better-predicted classes.</p>
+<p>We can handle this imbalanced data by the following methods,</p>
+<ol><li><p>Handle on the data itself</p>
+</li>
+</ol>
+<ul><li><p>Oversampling method</p>
+</li>
+<li><p>Undersampling method</p>
+</li>
+<li><p>Random sampling</p>
+</li>
+<li><p>SMOTE</p>
+</li>
+</ul>
+<ol><li><p>Handle in data splitting step When we split the data before training the model with cross-validation, some folds will have just a few or zero positive instances, setting a splitting method to stratify will help ensuring that each fold will have the same proportion of positive instances. This can be useful in multiclass classification problems.</p>
+</li>
+<li><p>Handle with training procedures When setting the model, we can set the class_weight parameter to balanced or specify the weights of each class directly. This way will help handle the imbalanced effect in our data.</p>
+</li>
+<li><p>Handling as anomaly detection problems In some cases, when we have a very low number of positive instances, these instances can be considered as an anomaly in the system and can be identified and detected with some anomaly detection methods such as</p>
+</li>
+</ol>
+<ul><li><p>Isolation forest model</p>
+</li>
+<li><p>Auto-associative models</p>
+</li>
+<li><p>Auto-associative Kernel Regression model (AAKR)</p>
+</li>
+<li><p>Auto-associative Neural Network model (AANN)</p>
+</li>
+</ul>
+<p><strong>Optimizing machine learning models</strong></p>
+<p>When optimizing machine learning models for classification problem, we have some methods that can help us adjust model parameters and achieve better result of our interested evaluation metrics.</p>
+<p><strong><u>Precision-Recall Curve </u></strong></p>
+<p>When we plot a confusion matrix of classification problems, we use the hard prediction of the machine learning model that predicts whether any instances are positive or negative with a default value of Threshold of the model.</p>
+<p>For example, in Logistic Classifier, the Threshold of the Sigmoid function is set on default at 0.5. This will give a certain performance of Precision and Recall but it does not guarantee that this will be the best possible value for our problem. Varying this Threshold value(0.1-1.0) will change the outcome of Precision and Recall. The ideal PR graph should reach the top-right corner of the plot.</p>
+<p>By plotting this Precision versus Recall with varying the threshold, we can see the whole picture of the model performance and can choose the best threshold value producing the best value of our interested evaluation metric.</p>
+<p>For example in Q1.1 that we concern about the Recall, we can see from the graph below that we can have the best Recall value (around 0.8) while not sacrificing too much Precision(around 0.5) at the threshold of 0.3</p>
+<figure><img src="../images/posts/techniques-for-tuning-classification-models-with-imbalanced-dataset-6.jpg" alt="" loading="lazy"></figure>
+<p>The Precision-Recall curve can also be used to compare model performances among different classification models as well. Below is the comparison of the Logistic Regression model and the SVC model, we can see that the SVC model is better than the Logistic Regression in many areas and is closer to the top-right corner which is the idea value.</p>
+<figure><img src="../images/posts/techniques-for-tuning-classification-models-with-imbalanced-dataset-7.jpg" alt="" loading="lazy"></figure>
+<p><strong><u>Average Precision Score</u></strong> </p>
+<p>The Average Precision score provides a summarized value of the Precision-Recall Curve by calculating the area under the curve. This number can be useful in the hyperparameter optimization step.</p>
+<figure><img src="../images/posts/techniques-for-tuning-classification-models-with-imbalanced-dataset-8.jpg" alt="" loading="lazy"></figure>
+<p>Please be noted one key difference of F1 Score and AP Score,</p>
+<ul><li><p>F1 score is for a given threshold and measures the quality of predict method of the model.</p>
+</li>
+<li><p>AP score is a summary across thresholds and measures the quality of predict_proba method of the model.</p>
+</li>
+</ul>
+<p><strong><u>Receiver Operating Characteristic Curve(ROC)</u></strong> </p>
+<p>Similar to the Precision-Recall curve, the ROC curve evaluates the model performance of predict_proba with all possible thresholds by plotting the True Positive Rate(TPR) versus the True Negative Rate(FPR). The ideal ROC graph should reach the top-left corner of the plot.</p>
+<figure><img src="../images/posts/techniques-for-tuning-classification-models-with-imbalanced-dataset-9.png" alt="" loading="lazy"></figure>
+<ul><li><p>TPR = Fraction of true positives out of all positive instances.</p>
+</li>
+<li><p>FPR = Fraction of false positives out of all negative instances.</p>
+</li>
+</ul>
+<p><strong><u>Area Under Curve(AUC)</u></strong></p>
+<p>The AUC is a summarized value calculated from the ROC curve.</p>
+<p><strong>Choosing the right method for an imbalaced dataset</strong></p>
+<p>In normal classification problems, we can choose the PR curve or the ROC curve for selecting the best machine learning model, but choosing the right one for an imbalanced dataset is important.</p>
+<p>There is an article published in 2015 claiming that the Precision-Recall curve is more suitable for imbalanced data classification problems than the ROC curve since the ROC curve may sometimes be misleading (<a href="https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0118432" target="_blank" rel="noopener"><u>Imbalanced Learning: Foundations, Algorithms, and Applications by Haibo He, Yunqian Ma</u></a>).</p>
+<p>Therefore, using the <strong>Precision-Recall curve may be a good idea for an imbalanced dataset</strong>.</p>
+<p><strong>Evaluate fairness of our machine learning model</strong></p>
+<p>Having a high value on our interested evaluation metric is good, but the model might sometimes be biased as well. We therefore need to analyze the performance of each group of our data as well.</p>
+<p>For example, in this question, we might be fooled by a high Precision value of the model, but there might be some certain groups of people having lower performance compared to the others. Therefore, it is a best practice that we separate people into groups by aspects and evaluate the model performance of each group, and compare them.</p>
+<p>The group in this case can be by gender(Male, Female, etc ..) or by age group(1-10, 11-20, 21-30, and so on)</p>
+<!-- END ARTICLE BODY -->
+</article></main>
+<footer class="site"><div class="wrap">
+<div>© <span id="yr"></span> Nate Puangpanbut</div>
+<div><a href="mailto:nate.puangpanbut@gmail.com">nate.puangpanbut@gmail.com</a> · <a href="https://www.linkedin.com/in/suraporn/" target="_blank" rel="noopener">LinkedIn</a> · <a href="https://github.com/Suraporn" target="_blank" rel="noopener">GitHub</a> · <a href="https://medium.com/@suraporn83" target="_blank" rel="noopener">Medium</a> · <a href="https://www.instagram.com/boy.yubcc/" target="_blank" rel="noopener">Instagram</a></div>
+</div></footer>
+<script>document.getElementById('yr').textContent=new Date().getFullYear()</script>
+</body></html>

@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Deploy ML Models with Docker | Nate Puangpanbut</title>
+<meta name="description" content="Packaging a scikit-learn sentiment model and its Flask API into a portable container.">
+<meta property="og:title" content="Deploy ML Models with Docker | Nate Puangpanbut">
+<meta property="og:description" content="Packaging a scikit-learn sentiment model and its Flask API into a portable container.">
+<meta property="og:image" content="https://nate-p.com/images/og.png">
+<link rel="icon" href="../images/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<header class="site"><div class="wrap">
+<a class="brand" href="../index.html">Nate <span>Puangpanbut</span></a>
+<nav><a href="../index.html">Home</a><a href="../projects.html" class=active>Projects</a><a href="../resume.html">Resume</a><a href="../contact.html">Contact</a></nav></div></header>
+
+<main class="wrap"><article>
+<a href="../projects.html">← All projects</a>
+<div class="eyebrow" style="margin-top:28px">Model Deployment</div>
+<h1>Deploy ML Models with Docker</h1>
+<div class="meta">Nate Puangpanbut · Jun 28, 2024</div>
+<!-- PASTE ARTICLE BODY BELOW. Use <h2>, <p>, <pre><code>...</code></pre>, <img src="../images/..."> -->
+<p>In recent years, Docker has revolutionized the way software applications are deployed and managed, including machine learning (ML) models. In this blog post, we will explore what Docker is, its advantages over traditional deployment methods, and provide a detailed guide on how to deploy a machine learning model using Docker.</p>
+<figure><img src="../images/posts/deploy-ml-models-with-docker-1.png" alt="" loading="lazy"></figure>
+<h2>What is Docker?</h2>
+<p>Docker is a containerization platform that allows you to package an application and its dependencies into a standardized unit called a container. Containers are lightweight, portable, and isolated environments that ensure consistent operation across different computing environments, from development to production.</p>
+<h2>Advantages of Docker for Machine Learning Deployment</h2>
+<ol><li><p><strong>Consistency</strong>: Docker ensures consistency between development, testing, and production environments. You can package your ML model along with its dependencies (libraries, frameworks, etc.) into a Docker image, guaranteeing that the model will behave the same way regardless of where it is deployed.</p>
+</li>
+<li><p><strong>Isolation</strong>: Each Docker container runs as an isolated process on the host machine, providing security and preventing interference between different applications or versions of the same application.</p>
+</li>
+<li><p><strong>Portability</strong>: Docker containers can run on any system that supports Docker, whether it's a developer's laptop, a cloud instance, or an on-premise server. This portability simplifies deployment across different platforms and infrastructure configurations.</p>
+</li>
+<li><p><strong>Scalability</strong>: Docker containers can be easily scaled horizontally by deploying multiple instances of the same containerized application, making it straightforward to handle increased workload or traffic.</p>
+</li>
+<li><p><strong>Efficiency</strong>: Docker images are lightweight and start quickly, reducing overhead compared to virtual machines (VMs). This efficiency is crucial for deploying and running multiple instances of machine learning models in production.</p>
+</li>
+</ol>
+<h2>Deploying a Machine Learning Model with Docker</h2>
+<p>To illustrate the deployment process, let's consider a simple example of deploying a scikit-learn-based ML model for sentiment analysis using Docker.</p>
+<h2>Step-by-Step Implementation</h2>
+<ol><li><p><strong>Create the ML Model</strong>: Develop a scikit-learn model for sentiment analysis. For simplicity, let's assume we have a trained model saved as a pickle file (model.pkl) and a Flask API (app.py) for serving predictions.
+</p>
+</li>
+</ol>
+<pre><code># app.py
+from flask import Flask, request, jsonify
+import joblib
+
+app = Flask(__name__)
+model = joblib.load('model.pkl')
+
+@app.route('/predict', methods=['POST'])
+def predict():
+    text = request.json['text']
+    prediction = model.predict([text])[0]
+    return jsonify({'prediction': prediction})
+
+if __name__ == '__main__':
+    app.run(debug=True, host='0.0.0.0')</code></pre>
+<p><strong>2. Create a Dockerfile</strong>: A Dockerfile is a text document that contains instructions to build a Docker image. Below is an example Dockerfile for our sentiment analysis model.</p>
+<pre><code># Dockerfile
+FROM python:3.9-slim
+
+WORKDIR /app
+
+COPY requirements.txt requirements.txt
+RUN pip install -r requirements.txt
+
+COPY . .
+
+CMD ["python", "app.py"]</code></pre>
+<ul><li><p>FROM python:3.9-slim: Base image with Python installed.</p>
+</li>
+<li><p>WORKDIR /app: Sets the working directory inside the container.</p>
+</li>
+<li><p>COPY requirements.txt requirements.txt: Copies the requirements file.</p>
+</li>
+<li><p>RUN pip install -r requirements.txt: Installs Python dependencies.</p>
+</li>
+<li><p>COPY . .: Copies the current directory (containing app.py and model.pkl) into the container.</p>
+</li>
+<li><p>CMD ["python", "app.py"]: Command to run when the container starts.</p>
+</li>
+</ul>
+<p><strong>3. Build the Docker Image</strong>: Navigate to the directory containing Dockerfile and requirements.txt, then run the following command to build the Docker image:</p>
+<pre><code>docker build -t sentiment-analysis-app .</code></pre>
+<p>This command builds an image named sentiment-analysis-app based on the instructions in the Dockerfile.</p>
+<p><strong>4. Run the Docker Container</strong>: Once the image is built, you can run a container using the following command:</p>
+<pre><code>docker run -p 5000:5000 sentiment-analysis-app</code></pre>
+<p>This command starts a container based on the sentiment-analysis-app image and maps port 5000 of the host machine to port 5000 of the container.</p>
+<p><strong>5. Access the API</strong>: Your Flask API for sentiment analysis is now running inside a Docker container. You can access it at http://localhost:5000/predict.</p>
+<h2>Comparison of FastAPI, Flask, and Other Comparable Tools</h2>
+<h3>FastAPI:</h3>
+<ul><li><p><strong>Modern and Fast</strong>: Built on modern Python features and leveraging asynchronous programming, FastAPI is known for its speed and performance.</p>
+</li>
+<li><p><strong>Type-Safe</strong>: Uses Python type annotations for input validation and automatic API documentation generation, enhancing code reliability.</p>
+</li>
+<li><p><strong>Automatic Documentation</strong>: Provides interactive API documentation with Swagger UI and ReDoc, making it easy to understand and test APIs.</p>
+</li>
+<li><p><strong>Supports Async</strong>: Well-suited for applications that require handling multiple concurrent requests efficiently, such as real-time applications or APIs with heavy traffic.</p>
+</li>
+</ul>
+<h3>Flask:</h3>
+<ul><li><p><strong>Lightweight and Flexible</strong>: Flask is minimalistic and easy to use, allowing developers to build web applications quickly.</p>
+</li>
+<li><p><strong>Extensible</strong>: Offers a wide range of extensions for various functionalities like authentication, ORM, and API development.</p>
+</li>
+<li><p><strong>Widely Adopted</strong>: Has a large community and extensive documentation, making it a popular choice for web development projects of all sizes.</p>
+</li>
+<li><p><strong>Simplicity</strong>: Flask’s simplicity makes it ideal for smaller applications or prototypes where rapid development is a priority.</p>
+</li>
+</ul>
+<h3>Comparison:</h3>
+<ul><li><p><strong>Performance</strong>: FastAPI tends to outperform Flask in terms of speed and handling concurrent requests due to its async capabilities.</p>
+</li>
+<li><p><strong>Development Speed</strong>: Flask is quicker to set up and get started with, making it preferable for smaller projects or prototypes.</p>
+</li>
+<li><p><strong>Documentation</strong>: FastAPI excels in automatically generating comprehensive API documentation, which can reduce development time and improve maintainability.</p>
+</li>
+<li><p><strong>Complexity</strong>: FastAPI’s use of type annotations and async programming might have a steeper learning curve compared to Flask, which is simpler and easier for beginners.</p>
+</li>
+</ul>
+<h3>Other Tools:</h3>
+<ul><li><p><strong>Django</strong>: Provides a full-stack framework with built-in ORM, admin interface, and robust security features, suitable for larger applications with complex requirements.</p>
+</li>
+<li><p><strong>TensorFlow Serving</strong>: Specifically designed for serving machine learning models, TensorFlow Serving optimizes model inference performance and scalability.</p>
+</li>
+<li><p><strong>Kubernetes</strong>: While not a framework like FastAPI or Flask, Kubernetes offers container orchestration for deploying and managing containerized applications at scale, including machine learning models.</p>
+</li>
+</ul>
+<h2>Conclusion</h2>
+<p>Choosing the right tool for deploying machine learning models depends on your project requirements, team expertise, and scalability needs. FastAPI and Flask both offer powerful solutions for building and deploying APIs, each with its own strengths and trade-offs. By understanding these differences, you can make informed decisions to optimize your development and deployment workflows, ensuring successful integration of machine learning into your applications.</p>
+<!-- END ARTICLE BODY -->
+</article></main>
+<footer class="site"><div class="wrap">
+<div>© <span id="yr"></span> Nate Puangpanbut</div>
+<div><a href="mailto:nate.puangpanbut@gmail.com">nate.puangpanbut@gmail.com</a> · <a href="https://www.linkedin.com/in/suraporn/" target="_blank" rel="noopener">LinkedIn</a> · <a href="https://github.com/Suraporn" target="_blank" rel="noopener">GitHub</a> · <a href="https://medium.com/@suraporn83" target="_blank" rel="noopener">Medium</a> · <a href="https://www.instagram.com/boy.yubcc/" target="_blank" rel="noopener">Instagram</a></div>
+</div></footer>
+<script>document.getElementById('yr').textContent=new Date().getFullYear()</script>
+</body></html>

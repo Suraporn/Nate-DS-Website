@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Operationalizing ML Models with GCP Vertex AI | Nate Puangpanbut</title>
+<meta name="description" content="Taking models from notebook to production on Google Cloud Vertex AI, so the organization actually gets value from them.">
+<meta property="og:title" content="Operationalizing ML Models with GCP Vertex AI | Nate Puangpanbut">
+<meta property="og:description" content="Taking models from notebook to production on Google Cloud Vertex AI, so the organization actually gets value from them.">
+<meta property="og:image" content="https://nate-p.com/images/og.png">
+<link rel="icon" href="../images/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<header class="site"><div class="wrap">
+<a class="brand" href="../index.html">Nate <span>Puangpanbut</span></a>
+<nav><a href="../index.html">Home</a><a href="../projects.html" class=active>Projects</a><a href="../resume.html">Resume</a><a href="../contact.html">Contact</a></nav></div></header>
+
+<main class="wrap"><article>
+<a href="../projects.html">← All projects</a>
+<div class="eyebrow" style="margin-top:28px">MLOps</div>
+<h1>Operationalizing ML Models with GCP Vertex AI</h1>
+<div class="meta">Nate Puangpanbut · Jun 28, 2024</div>
+<!-- PASTE ARTICLE BODY BELOW. Use <h2>, <p>, <pre><code>...</code></pre>, <img src="../images/..."> -->
+<p>In today's data-driven world, operationalizing machine learning (ML) models efficiently is crucial for organizations aiming to derive actionable insights and drive business decisions. Google Cloud Platform (GCP) offers an advanced suite of tools under Vertex AI that facilitates the implementation of MLOps (Machine Learning Operations), enabling seamless management of the ML lifecycle from data preparation and model training to deployment and monitoring. In this comprehensive guide, we will delve deeper into MLOps, explore the advantages of Vertex AI, and provide a detailed walkthrough on applying MLOps with Google Cloud Platform - Vertex AI.</p>
+<figure><img src="../images/posts/operationalizing-machine-learning-models-with-gcp-vertexai-1.jpg" alt="" loading="lazy"></figure>
+<h2>Understanding MLOps</h2>
+<p>MLOps encompasses the practices and technologies that streamline and automate the deployment, scaling, monitoring, and management of ML models in production environments. It merges principles from DevOps with ML-specific requirements to ensure repeatability, scalability, and reliability of ML workflows.</p>
+<h2>Advantages of Vertex AI for MLOps</h2>
+<ol><li><p><strong>Unified Platform</strong>: Vertex AI provides a unified platform that integrates various stages of the ML lifecycle, including data ingestion, preprocessing, model training, deployment, and monitoring. This integration simplifies workflows and reduces operational complexity.</p>
+</li>
+<li><p><strong>AutoML Capabilities</strong>: Vertex AI includes AutoML capabilities that enable users, including those without deep ML expertise, to build and deploy custom ML models quickly. AutoML features empower domain experts to leverage ML effectively for business use cases.</p>
+</li>
+<li><p><strong>Scalability and Performance</strong>: Leveraging Google's robust infrastructure, Vertex AI offers scalable and high-performance computing resources for model training and serving. This ensures low latency and high availability, critical for real-time ML applications.</p>
+</li>
+<li><p><strong>Integration with GCP Services</strong>: Vertex AI seamlessly integrates with other Google Cloud services such as BigQuery for data analytics, Dataflow for data processing pipelines, and Kubernetes Engine for container orchestration. This integration facilitates end-to-end ML workflows within a cloud-native environment.</p>
+</li>
+<li><p><strong>Monitoring and Versioning</strong>: Vertex AI provides tools for monitoring model performance metrics such as latency, prediction drift, and accuracy. Versioning capabilities enable tracking of model iterations and experiments, ensuring continuous improvement and regulatory compliance.</p>
+</li>
+</ol>
+<h2>Applying MLOps with Vertex AI</h2>
+<p>To illustrate the practical application of MLOps using Vertex AI, let's walk through a detailed example of training, deploying, and monitoring an image classification model using TensorFlow and Vertex AI.</p>
+<h3>Step-by-Step Implementation</h3>
+<ol><li><p><strong>Data Preparation and Model Development</strong>:</p>
+</li>
+</ol>
+<ul><li><p>Develop a TensorFlow model for image classification.</p>
+</li>
+<li><p>Train the model using labeled data stored in Google Cloud Storage or BigQuery.
+</p>
+</li>
+</ul>
+<pre><code># TensorFlow model training example
+import tensorflow as tf
+from tensorflow.keras import layers, models
+
+# Define and compile your TensorFlow model
+model = models.Sequential([
+    layers.Conv2D(32, (3, 3), activation='relu', input_shape=(28, 28, 1)),
+    layers.MaxPooling2D((2, 2)),
+    layers.Flatten(),
+    layers.Dense(10, activation='softmax')
+])
+model.compile(optimizer='adam',
+              loss='sparse_categorical_crossentropy',
+              metrics=['accuracy'])
+
+# Train the model
+mnist = tf.keras.datasets.mnist
+(x_train, y_train), (x_test, y_test) = mnist.load_data()
+x_train, x_test = x_train / 255.0, x_test / 255.0
+model.fit(x_train, y_train, epochs=5)</code></pre>
+<p><strong>2. Deploy the Model on Vertex AI</strong>:</p>
+<ul><li><p>Upload the trained model artifacts to Google Cloud Storage.</p>
+</li>
+<li><p>Use Vertex AI to create an endpoint and deploy the model for inference.</p>
+</li>
+</ul>
+<pre><code># Upload model to Google Cloud Storage
+gsutil cp -r saved_model/ gs://your-bucket/model/
+
+# Deploy model on Vertex AI
+gcloud ai models create my-model \
+    --artifact-uri=gs://your-bucket/model/ \
+    --regions=us-central1
+
+gcloud ai endpoints create my-endpoint \
+    --region=us-central1
+
+gcloud ai endpoints deploy my-endpoint \
+    --model=my-model \
+    --region=us-central1 \
+    --traffic-split=0=100</code></pre>
+<p><strong>3. Monitor Model Performance</strong>:</p>
+<ul><li><p>Enable logging and monitoring for the deployed model using Vertex AI's built-in capabilities.</p>
+</li>
+</ul>
+<pre><code>gcloud beta ai endpoints update my-endpoint \
+    --region=us-central1 \
+    --enable-prediction-logging</code></pre>
+<p><strong>4. Automate MLOps Workflows with CI/CD</strong>:</p>
+<ul><li><p>Implement CI/CD pipelines using Google Cloud Build or Kubeflow Pipelines to automate model training, validation, deployment, and monitoring.
+</p>
+</li>
+</ul>
+<pre><code># Example Cloud Build YAML file for CI/CD pipeline
+steps:
+  - name: 'gcr.io/cloud-builders/gcloud'
+    args: ['ai', 'models', 'create', 'my-model', '--region=us-central1', ...]
+
+  - name: 'gcr.io/cloud-builders/gcloud'
+    args: ['ai', 'endpoints', 'create', 'my-endpoint', '--region=us-central1', ...]
+
+  - name: 'gcr.io/cloud-builders/gcloud'
+    args: ['ai', 'endpoints', 'deploy', 'my-endpoint', '--region=us-central1', ...]</code></pre>
+<h2>Conclusion</h2>
+<p>Google Cloud Platform - Vertex AI empowers organizations to implement robust MLOps practices, enabling efficient deployment, scaling, and management of machine learning models. By leveraging Vertex AI's unified platform, autoML capabilities, scalability, and integration with Google Cloud services, data scientists and ML engineers can accelerate the adoption of AI-driven insights and applications.</p>
+<p>Start applying MLOps with Vertex AI today to streamline your ML workflows, enhance model performance, and drive innovation within your organization. Whether you are building custom models, leveraging AutoML, or scaling AI initiatives, Vertex AI provides the tools and infrastructure needed to succeed in deploying production-grade ML models at scale in the cloud.</p>
+<!-- END ARTICLE BODY -->
+</article></main>
+<footer class="site"><div class="wrap">
+<div>© <span id="yr"></span> Nate Puangpanbut</div>
+<div><a href="mailto:nate.puangpanbut@gmail.com">nate.puangpanbut@gmail.com</a> · <a href="https://www.linkedin.com/in/suraporn/" target="_blank" rel="noopener">LinkedIn</a> · <a href="https://github.com/Suraporn" target="_blank" rel="noopener">GitHub</a> · <a href="https://medium.com/@suraporn83" target="_blank" rel="noopener">Medium</a> · <a href="https://www.instagram.com/boy.yubcc/" target="_blank" rel="noopener">Instagram</a></div>
+</div></footer>
+<script>document.getElementById('yr').textContent=new Date().getFullYear()</script>
+</body></html>

@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>EPL Ranking with Bayesian Inference | Nate Puangpanbut</title>
+<meta name="description" content="Rating Premier League teams and forecasting the final table with a Bayesian model.">
+<meta property="og:title" content="EPL Ranking with Bayesian Inference | Nate Puangpanbut">
+<meta property="og:description" content="Rating Premier League teams and forecasting the final table with a Bayesian model.">
+<meta property="og:image" content="https://nate-p.com/images/og.png">
+<link rel="icon" href="../images/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<header class="site"><div class="wrap">
+<a class="brand" href="../index.html">Nate <span>Puangpanbut</span></a>
+<nav><a href="../index.html">Home</a><a href="../projects.html" class=active>Projects</a><a href="../resume.html">Resume</a><a href="../contact.html">Contact</a></nav></div></header>
+
+<main class="wrap"><article>
+<a href="../projects.html">← All projects</a>
+<div class="eyebrow" style="margin-top:28px">Bayesian Statistics</div>
+<h1>EPL Ranking with Bayesian Inference</h1>
+<div class="meta">Nate Puangpanbut · Feb 13, 2024</div>
+<!-- PASTE ARTICLE BODY BELOW. Use <h2>, <p>, <pre><code>...</code></pre>, <img src="../images/..."> -->
+<p>As a football fan, sometimes you might wonder how good your team is compared to other teams, or even thinking about predicting the final score of the game when your team is playing with other teams. There are many ways to tackle this problem, one promising approach is to apply the Bayesian Inference to develop strength or skill comparison of each team. Therefore, I collect the English Premier League match result from 2021-22 season to run the analysis and compare with the actual EPL result.</p>
+<figure><img src="../images/posts/epl-ranking-with-bayesian-inference-1.jpg" alt="" loading="lazy"></figure>
+<p>English Premier League Team Ranking</p>
+<p>English Premier League football (EPL) is one of the most popular professional football league in the world, it has been broadcasted and been watched from all over the world. As a sport fan or a football fan, you might have heard that many famous football players decide to play in the EPL because its competitiveness and its popularity.</p>
+<p>Growing up in Thailand where football is <a href="https://www.nate-p.com/projects/hashtags/1" target="_blank" rel="noopener">#1</a> sport in the country, I have been watching and following the EPL since grade6, it becomes one of my routine to check the result of my beloved team. Many times, you end up arguing with your friend whether you supported team is better than their team. In this work, I apply the Bayesian inference in R to help infer the strength or skill of each team, so we can have a holistic idea how the teams perform during the season.</p>
+<p>Wrangling the data</p>
+<p>We will use the <a href="https://www.kaggle.com/datasets/irkaal/english-premier-league-results" target="_blank" rel="noopener"><u>English Premier League (EPL) Results dataset</u></a> available on Kaggle. This dataset includes all match results from season 1993-94 to 2021-22 season and we will use only the 2021-22 season to perform the analysis.</p>
+<p>Therefore, let's start it by loading the necessary libraries and reading the data. Please be noted that Rstan library needed to be properly installed in R first.</p>
+<pre><code>```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(rstan)
+library(rstantools)
+library(cowplot)
+library(lubridate)
+rstan_options(auto_write = TRUE)
+```</code></pre>
+<pre><code>```{r}
+games_raw &lt;- read_csv("data/results.csv")
+head(games_raw)
+```</code></pre>
+<figure><img src="../images/posts/epl-ranking-with-bayesian-inference-2.png" alt="" loading="lazy"></figure>
+<p>Then, we wrangle the data to have only some necessary columns to run the analysis.</p>
+<pre><code>```{r}
+games &lt;- games_raw |&gt; filter(Season == "2021-22")
+
+games &lt;- games |&gt;
+  mutate(
+    AwayTeam = as.factor(AwayTeam),
+    HomeTeam = as.factor(HomeTeam)
+  )
+
+# Create a  dictionary of IDs, and assign numerical codes
+# from 1 to 20 according to the alphabetical order.
+dictionary_names &lt;- tibble(
+  team = levels(games$HomeTeam),
+  code = 1:20
+)
+
+# Select related columns.
+games &lt;- games |&gt;
+  select(
+    DateTime, HomeTeam, AwayTeam,
+    FTHG, FTAG
+  )
+
+# Switch the ID names to numerical codes from 1 to 20
+levels(games$HomeTeam) &lt;- 1:20
+levels(games$AwayTeam) &lt;- 1:20
+
+# Formulate new columns
+games &lt;- games |&gt;
+  mutate(
+    winning_team = case_when(
+      FTAG &gt; FTHG ~ AwayTeam,
+      FTAG &lt; FTHG ~ HomeTeam
+    ),
+    winning_score = case_when(
+      FTAG &gt; FTHG ~ FTAG,
+      FTAG &lt; FTHG ~ FTHG
+    ),
+    losing_team = case_when(
+      FTAG &gt; FTHG ~ HomeTeam,
+      FTAG &lt; FTHG ~ AwayTeam
+    ),
+    losing_score = case_when(
+      FTAG &gt; FTHG ~ FTHG,
+      FTAG &lt; FTHG ~ FTAG
+    ),
+    score_diff = winning_score - losing_score
+  ) |&gt;
+  select(
+    winning_team, winning_score,
+    losing_team, losing_score, score_diff
+  )
+
+# Games resulting in tie will be discarded.
+games &lt;- drop_na(games)
+
+head(games)
+```</code></pre>
+<figure><img src="../images/posts/epl-ranking-with-bayesian-inference-3.png" alt="" loading="lazy"></figure>
+<p>Design the probabilistic model</p>
+<p>Before running the Bayesian statistics with <a href="https://www.youtube.com/watch?v=yApmR-c_hKU" target="_blank" rel="noopener"><u>MCMC simulation</u></a> (Markov Chain Monte Carlo simulation) with Rstan in R, we need to setup the probabilistic model for the problem, or in another word, setup the skill or strength function.</p>
+<p>Thinking about the winning_team and losing_team, they can be only positive integers between 1-20 indicating the team while the winning_score, losing_score, and score_diff will be positive integers since the score in football can only be positive integer and the score_diff which is winning_score - losing_score will be positive integer as well. Therefore, we can setup the score_diff to be a Poisson distribution as below. </p>
+<figure><img src="../images/posts/epl-ranking-with-bayesian-inference-4.png" alt="" loading="lazy"></figure>
+<p><em>where λi is a continuous function of the skill of the winning_team and the skill of the losing_team.</em></p>
+<p>In addition, we need to consider the way we model this λ parameter as well. Since the λ in the Poisson distribution is only allowed to be a positive integer and it is better if we can differentiate between strong and weak team. Therefore, we could use the log function below as a function of λ. This function is appropriate because Wi - Li is non-negative variable and we can have skill which is non-negative variable as well. Also, if we have more difference in Wi - Li, the skill will be greatly increased and it helps differentiate skill of each team.</p>
+<figure><img src="../images/posts/epl-ranking-with-bayesian-inference-5.png" alt="" loading="lazy"></figure>
+<figure><img src="../images/posts/epl-ranking-with-bayesian-inference-6.jpg" alt="" loading="lazy"></figure>
+<p>For the prior, since skill is non-negative variable, therefore, I choose the Gamma(alpha, beta) distribution to be the prior distribution of the skill so we can have the skill be a continuous and non-negative variable/distribution. Let's try a prior Gamma(α = 1, β = 1).</p>
+<p>Code and run the model</p>
+<p>According to the setup above, we can code the Rstan model and run it with code blocks below. Please be noted that MCMC simulation will need sometimes to run, therefore, do not be alarm if it runs too long on your end.</p>
+<pre><code>```{stan output.var='epl_stan_model'}
+data {
+int&lt;lower=0&gt; n;
+int&lt;lower=0&gt; t;
+int&lt;lower=1&gt; win_team[n];
+int&lt;lower=1&gt; lose_team[n];
+int&lt;lower=0&gt; score_diff[n];
+}
+parameters {
+vector&lt;lower=0&gt;[t] skill;
+}
+model {
+for (j in 1:t){
+  skill[j] ~ gamma(1, 1);
+}
+for (i in 1:n){
+  int win_index = win_team[i];
+  int lose_index = lose_team[i];
+  score_diff[i] ~ poisson(log(1 + exp(skill[win_index] - skill[lose_index])));
+}
+}
+```</code></pre>
+<pre><code>```{r}
+epl_dictionary &lt;- list(
+  n = nrow(games),
+  t = nrow(dictionary_names),
+  win_team = as.integer(games$winning_team),
+  lose_team = as.integer(games$losing_team),
+  score_diff = as.integer(games$score_diff)
+)
+```</code></pre>
+<pre><code>```{r}
+# Simulate Posterior
+posterior_epl &lt;- sampling(
+  object = epl_stan_model,
+  data = epl_dictionary,
+  chains = 1,
+  iter = 100000,
+  warmup = 2000,
+  thin = 20,
+  seed = 553
+)
+posterior_epl &lt;- as.data.frame(posterior_epl)
+```</code></pre>
+<p>Result of the Bayesian model</p>
+<p>After running the model, we can access the posterior distribution and run visualization as codes below.</p>
+<pre><code>```{r}
+# The first 20 columns: skill[1], ... skill[20].
+posterior_epl &lt;- posterior_epl[, 1:20]
+
+# Create a new column indicating the replicate by row .
+posterior_epl$sample &lt;- 1:nrow(posterior_epl)
+
+# Melting the data frame leaving one column for the replicate number (sample),
+# another one indicating the team (as skill[1], ... skill[20]), and
+# the continuous posterior skill values from our Bayesian sampling.
+posterior_epl &lt;- posterior_epl |&gt;
+pivot_longer(!sample, names_to = "team", values_to = "skill")
+
+# The real team codes stored in dictionary_names instead of skill[1], ..., skill[20].
+posterior_epl$team &lt;- as.factor(posterior_epl$team)
+dictionary_names &lt;- dictionary_names %&gt;%
+  mutate(code = paste("skill[", as.character(code), "]", sep = ""))
+recoding &lt;- dictionary_names$team
+names(recoding) &lt;- dictionary_names$code
+levels(posterior_epl$team) &lt;- recode(
+  levels(posterior_epl$team),
+  !!!recoding
+)
+
+posterior_epl_CIs &lt;- posterior_epl |&gt;
+  group_by(team) |&gt;
+  summarize(median = median(skill),
+            lower_bound = quantile(skill, probs=0.25),
+            upper_bound = quantile(skill, probs=0.75),
+            )
+head(posterior_epl_CIs)
+```
+</code></pre>
+<figure><img src="../images/posts/epl-ranking-with-bayesian-inference-7.jpg" alt="" loading="lazy"></figure>
+<pre><code>```{r fig.width=7, fig.height=6}
+posterior_epl_CIs_sorted &lt;- posterior_epl_CIs |&gt; 
+  mutate(team = fct_reorder(team, median))
+
+posterior_epl_CIs_plot&lt;- posterior_epl_CIs_sorted |&gt;
+  ggplot(aes(x=median, y=team)) +
+  geom_point() + 
+  geom_errorbarh(aes(xmax = lower_bound, xmin = upper_bound, color = team)) +
+  theme(
+    plot.title = element_text(size = 10, face = "bold"),
+    axis.text = element_text(size = 9),
+    axis.title = element_text(size = 9)
+  ) +
+  xlab("Skill") +
+  ylab("Team") +
+  ggtitle("50% Credible Intervals of EPL Skill by Team in 2021-22 Season") 
+posterior_epl_CIs_plot
+```</code></pre>
+<figure><img src="../images/posts/epl-ranking-with-bayesian-inference-8.jpg" alt="" loading="lazy"></figure>
+<p>Based on the 50% credible interval result above, we can see that there is a clear cut of one superior group of 3 teams; Liverpool, Man City, and Chelsea that has better skill than the rest because their 50% credible interval of these 3 teams do not intersect with the credible intervals of other remaining teams. In addition, there is a closed separation between Brentford and Brighton since their 50% credible interval intersect with a tiny gap. Yet, roughly, we can separate the 2nd tier of team from Crystal Palace to Brentford, and the 3rd tier from Brighton to Norwich.  </p>
+<p>Compare to the actual EPL table</p>
+<figure><img src="../images/posts/epl-ranking-with-bayesian-inference-9.jpg" alt="" loading="lazy"></figure>
+<p>When we compare the Bayesian inference result with the real final league table, we can see that the skill result quite aligns with the final league table, many teams ended up in the same position with a tiny gap of error. However, there are some big difference for some teams such as Crystal Palace, Brighton, and Newcastle. One probable cause is that we setup the skill by the amount of goal difference, these teams might win a big goal difference but lose with a tiny goal difference, therefore, the skill is difference than the real league table that measures only the winning point.</p>
+<p>Other methods to improve this Bayesian inference model is to,</p>
+<ul><li><p>Incorporate the latest league standing of each team before playing because the difference in the standing will probably influence to how the team plan to play which we relate to the goal difference as well.</p>
+</li>
+<li><p>Consider the moral of the team by using some previous match results into calculation. A teams that win some matches consecutively will have high moral to play rather than a losing streak team.</p>
+</li>
+<li><p>Consider to separate the skill into attacking skill and defensive skill because each team will have difference strategy or strength in a game plan.</p>
+</li>
+<li><p>Consider to formulate a new skill function that incorporate draw games as well.</p>
+</li>
+</ul>
+<p>Summary</p>
+<p>Even though, there are several ways to construct skill difference of any sport teams, some methods such as Regression, Classification, and Clustering may not be obvious for this question. One promising way is to apply the Bayesian Inference with proper probabilistic model setup, this will help us analyze the skill of each team and have a holistic idea that we can analyze the skill of teams later on.  </p>
+<!-- END ARTICLE BODY -->
+</article></main>
+<footer class="site"><div class="wrap">
+<div>© <span id="yr"></span> Nate Puangpanbut</div>
+<div><a href="mailto:nate.puangpanbut@gmail.com">nate.puangpanbut@gmail.com</a> · <a href="https://www.linkedin.com/in/suraporn/" target="_blank" rel="noopener">LinkedIn</a> · <a href="https://github.com/Suraporn" target="_blank" rel="noopener">GitHub</a> · <a href="https://medium.com/@suraporn83" target="_blank" rel="noopener">Medium</a> · <a href="https://www.instagram.com/boy.yubcc/" target="_blank" rel="noopener">Instagram</a></div>
+</div></footer>
+<script>document.getElementById('yr').textContent=new Date().getFullYear()</script>
+</body></html>

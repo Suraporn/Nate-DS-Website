@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Deploy ML Models with Flask | Nate Puangpanbut</title>
+<meta name="description" content="Serving a trained model behind a lightweight Flask REST API.">
+<meta property="og:title" content="Deploy ML Models with Flask | Nate Puangpanbut">
+<meta property="og:description" content="Serving a trained model behind a lightweight Flask REST API.">
+<meta property="og:image" content="https://nate-p.com/images/og.png">
+<link rel="icon" href="../images/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<header class="site"><div class="wrap">
+<a class="brand" href="../index.html">Nate <span>Puangpanbut</span></a>
+<nav><a href="../index.html">Home</a><a href="../projects.html" class=active>Projects</a><a href="../resume.html">Resume</a><a href="../contact.html">Contact</a></nav></div></header>
+
+<main class="wrap"><article>
+<a href="../projects.html">← All projects</a>
+<div class="eyebrow" style="margin-top:28px">Model Deployment</div>
+<h1>Deploy ML Models with Flask</h1>
+<div class="meta">Nate Puangpanbut · May 26, 2024</div>
+<!-- PASTE ARTICLE BODY BELOW. Use <h2>, <p>, <pre><code>...</code></pre>, <img src="../images/..."> -->
+<p>As discussed in the <a href="https://www.nate-ds.com/post/deploy-ml-models-with-fastapi" target="_blank" rel="noopener"><u>previous project</u></a>, Flask is another valuable API for deploying models. Let's delve into deployment with Flask!</p>
+<figure><img src="../images/posts/deploy-ml-models-with-flask-1.png" alt="" loading="lazy"></figure>
+<p>From the code in the  <a href="https://www.nate-ds.com/post/deploy-ml-models-with-fastapi" target="_blank" rel="noopener"><u>previous project</u></a>, we can implement the same application with Flask as the code below,</p>
+<pre><code>import io
+import cv2
+import numpy as np
+from flask import Flask, request, send_file, jsonify, Response
+from werkzeug.utils import secure_filename
+from enum import Enum
+import cvlib as cv
+
+# Initialize Flask application
+app = Flask(__name__)
+
+# List available models using Enum for convenience. This is useful when the options are pre-defined.
+class Model(str, Enum):
+    yolov3tiny = "yolov3-tiny"
+    yolov3 = "yolov3"
+
+# Home endpoint
+@app.route("/")
+def home():
+    return "Congratulations! Your API is working as expected"
+
+# Prediction endpoint with image response
+@app.route("/predict", methods=["POST"])
+def predict():
+    model = request.form['model']
+    file = request.files['file']
+
+    # Validate file extension
+    filename = secure_filename(file.filename)
+    fileExtension = filename.split(".")[-1] in ("jpg", "jpeg", "png")
+    if not fileExtension:
+        return "Unsupported file provided.", 415
+
+    # Transform raw image into CV2 image
+    image_stream = io.BytesIO(file.read())
+    image_stream.seek(0)
+    file_bytes = np.asarray(bytearray(image_stream.read()), dtype=np.uint8)
+    image = cv2.imdecode(file_bytes, cv2.IMREAD_COLOR)
+
+    # Run object detection model
+    bbox, label, conf = cv.detect_common_objects(image, model=model)
+
+    # Draw bounding boxes on image
+    output_image = draw_bbox(image, bbox, label, conf)
+    cv2.imwrite(f'images_uploaded/{filename}', output_image)
+
+    # Return image file as response
+    return send_file(f'images_uploaded/{filename}', mimetype='image/jpeg')
+
+# Prediction endpoint with JSON response
+@app.route("/predict_json", methods=["POST"])
+def predict_json():
+    model = request.form['model']
+    file = request.files['file']
+
+    # Validate file extension
+    filename = secure_filename(file.filename)
+    fileExtension = filename.split(".")[-1] in ("jpg", "jpeg", "png")
+    if not fileExtension:
+        return "Unsupported file provided.", 415
+
+    # Transform raw image into CV2 image
+    image_stream = io.BytesIO(file.read())
+    image_stream.seek(0)
+    file_bytes = np.asarray(bytearray(image_stream.read()), dtype=np.uint8)
+    image = cv2.imdecode(file_bytes, cv2.IMREAD_COLOR)    
+
+    # Run object detection model
+    bbox, label, conf = cv.detect_common_objects(image, model=model)
+
+    # Prepare JSON response
+    detections = []
+    for i in range(len(bbox)):
+        detections.append({
+            "bbox": bbox[i],
+            "label": label[i],
+            "confidence": conf[i]
+        })
+    return jsonify({"detections": detections})
+
+# Helper function to draw bounding boxes on images
+def draw_bbox(image, bbox, label, conf):
+    for i in range(len(bbox)):
+        color = (0, 255, 0)  # green color for bounding box
+        cv2.rectangle(image, bbox[i], color, 2)
+        text = f"{label[i]}: {conf[i]}"
+        cv2.putText(image, text, (bbox[i][0], bbox[i][1] - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
+    return image
+
+# Run the Flask app
+if __name__ == "__main__":
+	app.run(host='127.0.0.1', port=8000, debug=True)</code></pre>
+<h2>Extra on FastAPI vs Flask!!</h2>
+<p>In the realm of Python web development, two frameworks stand out as popular choices for building APIs: FastAPI and Flask. While both offer powerful tools for creating web applications, they differ in their approach, features, and suitability for various use cases. FastAPI, known for its exceptional performance and asynchronous support, caters to applications requiring high scalability and real-time communication. On the other hand, Flask, with its simplicity and flexibility, appeals to developers seeking rapid prototyping and minimal configuration. In this comparison, we'll explore the key differences between FastAPI and Flask, along with real-life applications where each excels.</p>
+<h3>Performance and Speed:</h3>
+<ul><li><p><strong>FastAPI</strong>: FastAPI is designed for high performance and speed. It leverages asynchronous programming, making it ideal for handling heavy workloads and concurrent requests efficiently.</p>
+</li>
+<li><p><strong>Flask</strong>: Flask is lightweight and flexible but lacks native support for asynchronous programming. While it's fast for smaller applications, it may struggle to handle large-scale applications or heavy traffic compared to FastAPI.</p>
+</li>
+</ul>
+<h3>Type Annotations and Validation:</h3>
+<ul><li><p><strong>FastAPI</strong>: FastAPI uses Python type annotations for request and response handling, enabling automatic data validation and documentation generation through tools like Pydantic. This leads to more robust and self-documenting APIs.</p>
+</li>
+<li><p><strong>Flask</strong>: Flask does not have built-in support for type annotations or data validation. Developers typically rely on external libraries like Marshmallow for request validation and documentation.</p>
+</li>
+</ul>
+<h3>Documentation:</h3>
+<ul><li><p><strong>FastAPI</strong>: FastAPI automatically generates interactive API documentation using OpenAPI and Swagger UI. This documentation is comprehensive, providing information about request and response formats, query parameters, and more.</p>
+</li>
+<li><p><strong>Flask</strong>: Flask does not provide built-in support for generating API documentation. Documentation needs to be written manually or generated using third-party tools like Flask-RESTPlus.</p>
+</li>
+</ul>
+<h3>Ease of Use:</h3>
+<ul><li><p><strong>FastAPI</strong>: FastAPI comes with features like automatic dependency injection, automatic data validation, and integrated WebSocket support, which streamline development and make it easy to build complex APIs.</p>
+</li>
+<li><p><strong>Flask</strong>: Flask is known for its simplicity and ease of use, making it a popular choice for small to medium-sized applications. However, developers may need to rely on external libraries for additional features like data validation and documentation.</p>
+</li>
+</ul>
+<h3>Community and Ecosystem:</h3>
+<ul><li><p><strong>FastAPI</strong>: FastAPI is relatively newer compared to Flask but has gained significant popularity due to its performance and modern features. It has an active and growing community, with many plugins and extensions available.</p>
+</li>
+<li><p><strong>Flask</strong>: Flask has been around for longer and has a mature ecosystem with a wide range of extensions and plugins for various functionalities. It has a large community and extensive documentation, making it easy to find solutions to common problems.</p>
+</li>
+</ul>
+<h3>Real-Life Applications:</h3>
+<ul><li><p><strong>FastAPI</strong>: FastAPI's performance, asynchronous support, and automatic documentation generation make it an excellent choice for building APIs that require high scalability and real-time communication. Real-life applications where FastAPI shines include:</p>
+</li>
+<li><p><strong>Real-time Data Streaming</strong>: FastAPI's asynchronous support makes it well-suited for handling real-time data streaming applications, such as chat applications, live tracking systems, or financial trading platforms.</p>
+</li>
+<li><p><strong>Microservices Architecture</strong>: FastAPI's lightweight and high-performance nature make it ideal for building microservices that need to handle a large number of concurrent requests efficiently.</p>
+</li>
+<li><p><strong>Machine Learning Model Deployment</strong>: FastAPI's integration with Pydantic for data validation and OpenAPI for automatic documentation generation makes it an excellent choice for deploying machine learning models as APIs. This is particularly useful for applications like recommendation systems, image recognition APIs, or natural language processing services.</p>
+</li>
+</ul>
+<ul><li><p><strong>Flask</strong>: Flask's simplicity, flexibility, and large ecosystem of extensions make it suitable for a wide range of applications, particularly those where rapid prototyping or minimal configuration is required. Real-life applications where Flask excels include:</p>
+</li>
+<li><p><strong>Web Applications</strong>: Flask's lightweight nature and ease of use make it a popular choice for building web applications, particularly for startups or small businesses looking to develop prototypes or MVPs (Minimum Viable Products) quickly.</p>
+</li>
+<li><p><strong>Content Management Systems (CMS)</strong>: Flask's flexibility allows developers to tailor CMS solutions to specific requirements, making it suitable for building custom content management systems for blogs, forums, or small-scale e-commerce sites.</p>
+</li>
+<li><p><strong>RESTful APIs</strong>: Flask's simplicity and extensibility make it a solid choice for building RESTful APIs for applications like mobile app backends, IoT (Internet of Things) devices, or internal services within organizations.</p>
+</li>
+</ul>
+<p>When deciding between FastAPI and Flask for a real-life application, consider factors such as performance requirements, scalability, development speed, and the specific needs of your project. FastAPI is often preferred for applications requiring high performance, real-time communication, or machine learning model deployment, while Flask is favored for its simplicity, flexibility, and ease of use, making it suitable for a wide range of web development projects.</p>
+<p>In summary, FastAPI is a modern web framework known for its high performance, built-in support for asynchronous programming, and automatic data validation and documentation. Flask, on the other hand, is lightweight, flexible, and easy to use, making it suitable for smaller projects or applications where simplicity is key. The choice between FastAPI and Flask depends on the specific requirements and preferences of the project.</p>
+<!-- END ARTICLE BODY -->
+</article></main>
+<footer class="site"><div class="wrap">
+<div>© <span id="yr"></span> Nate Puangpanbut</div>
+<div><a href="mailto:nate.puangpanbut@gmail.com">nate.puangpanbut@gmail.com</a> · <a href="https://www.linkedin.com/in/suraporn/" target="_blank" rel="noopener">LinkedIn</a> · <a href="https://github.com/Suraporn" target="_blank" rel="noopener">GitHub</a> · <a href="https://medium.com/@suraporn83" target="_blank" rel="noopener">Medium</a> · <a href="https://www.instagram.com/boy.yubcc/" target="_blank" rel="noopener">Instagram</a></div>
+</div></footer>
+<script>document.getElementById('yr').textContent=new Date().getFullYear()</script>
+</body></html>
