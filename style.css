@@ -67,6 +67,11 @@ h2{font-size:30px;letter-spacing:-.02em;margin:0 0 8px}
 .timeline li{margin:4px 0}
 .chips{display:flex;flex-wrap:wrap;gap:8px}
 .chips span{background:var(--accent-soft);color:#174f42;padding:5px 12px;border-radius:999px;font-size:13.5px}
+.skills{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px}
+.skills .card{padding:22px}
+.skills h3{font-size:16px;margin:0 0 12px}
+.small{color:var(--muted);font-size:14px}
+.box p{margin:0 0 14px}
 .two{display:grid;grid-template-columns:1fr 1fr;gap:22px}
 .box{padding:24px}
 .box h3{margin:0 0 12px;font-size:16px}
