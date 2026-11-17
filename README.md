@@ -56,7 +56,7 @@ Then open http://localhost:8000.
 ## Updating
 
 - **Add a project:** copy any file in `post/` as a template. Add its thumbnail to `images/projects/<slug>.jpg`, then add a card to `projects.html`. To feature it on the home page, add the card to `home.html` too.
-- **Update the résumé:** replace `files/resume.pdf` and edit `resume.html`.
+- **Update the résumé:** replace `files/resume.pdf` and edit `resume.html`. Bump the `?v=` number on the résumé links so browsers fetch the new PDF.
 - **Style changes:** after editing `style.css`, bump the `?v=` number in the stylesheet links, so visitors' browsers load the new version.
 
 ## Contact
