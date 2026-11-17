@@ -16,7 +16,6 @@ img{max-width:100%;display:block}
 header.site{position:sticky;top:0;z-index:10;background:rgba(247,246,242,.88);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
 header.site .wrap{display:flex;align-items:center;justify-content:space-between;height:64px}
 .brand{font-weight:700;letter-spacing:-.01em;color:var(--ink)}
-.brand span{font-family:var(--mono);color:var(--accent);font-weight:500}
 nav a{color:var(--muted);margin-left:26px;font-size:15px}
 nav a:hover,nav a.active{color:var(--ink);text-decoration:none}
 nav a.active{border-bottom:2px solid var(--accent);padding-bottom:4px}
@@ -94,11 +93,12 @@ footer.site .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:
 
 .avatar img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 @media (max-width:760px){
-  .brand span{display:none}
   .avatar{font-size:40px}
   .hero{grid-template-columns:1fr;padding-top:48px}
   .avatar{width:140px;height:140px;order:-1}
-  nav a{margin-left:16px}
+  header.site .wrap{height:auto;flex-wrap:wrap;padding-top:12px;padding-bottom:10px;row-gap:6px}
+  nav{width:100%;display:flex;gap:20px}
+  nav a{margin-left:0;font-size:14.5px}
   .timeline .job{grid-template-columns:1fr;gap:6px}
   .two,form{grid-template-columns:1fr}
 }
