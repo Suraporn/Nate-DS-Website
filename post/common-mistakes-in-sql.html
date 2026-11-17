@@ -22,9 +22,219 @@
 <a href="../projects.html">← All projects</a>
 <div class="eyebrow" style="margin-top:28px">SQL</div>
 <h1>Common Mistakes in SQL</h1>
-<div class="meta">Nate Puangpanbut</div>
+<div class="meta">Nate Puangpanbut · Jan 2, 2024</div>
 <!-- PASTE ARTICLE BODY BELOW. Use <h2>, <p>, <pre><code>...</code></pre>, <img src="../images/..."> -->
-<div class="notice">Full write-up coming soon.</div>
+<h4><strong>As a data scientist or a data analyst, we usually need to work with SQL when we need to pull data from SQL servers or to combine and manipulate data from several tables, therefore, it is good if we can spot and avoid common mistakes when working with it.  Or even a beginner or someone who does not get used to SQL much, you might got some error running queries. Here, I summarize some common mistakes with examples, so we could easily aviod it and we are not a noob SQL anymore!  Fingercross if you do not need to work with SQL, you have Pandas!!! </strong></h4>
+<figure><img src="../images/posts/common-mistakes-in-sql-1.jpg" alt="" loading="lazy"></figure>
+<h2><strong>Import libraries and connect to databases</strong></h2>
+<p>Through out this work, we will run SQL commands in Jupyter Notebook (with ipython-sql) and work on <a href="https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/2QYZBT" target="_blank" rel="noopener"><u>IMDB</u></a> and <a href="https://www.postgresql.org/ftp/projects/pgFoundry/dbsamples/world/" target="_blank" rel="noopener"><u>WORLD</u></a> data badabases, therefore, we need to install and config libraries as below,</p>
+<p>    Import libraries :</p>
+<pre><code>import numpy as np
+import pandas as pd
+
+%matplotlib inline
+%load_ext sql
+%config SqlMagic.displaylimit = 20
+%config SqlMagic.autolimit = 30</code></pre>
+<p>    Read credential information from a credential.json file under /data</p>
+<pre><code>import json
+import urllib.parse
+
+with open('data/credentials.json') as f:
+    login = json.load(f)
+    
+username = login['user']
+password = urllib.parse.quote(login['password'])
+host = login['host']
+port = login['port']</code></pre>
+<p>    Connect to the database (One at a time)</p>
+<pre><code>%sql postgresql://{username}:{password}@{host}:{port}/imdb
+%sql postgresql://{username}:{password}@{host}:{port}/world</code></pre>
+<h2><strong><a href="https://www.nate-p.com/projects/hashtags/1" target="_blank" rel="noopener">#1</a> : Miss up clause orders and execution orders</strong></h2>
+<p>If you try to run a query below to see the result of movies that have a number of votes more than 1000, you will find an error indicating that it could not find the column "NumberOfVotes" that we aliased in SELECT statement.</p>
+<pre><code>%%sql
+
+SELECT
+    title AS Title,
+    start_year AS Year,
+    runtime AS Duration,
+    rating AS Rating
+    nvotes AS NumberOfVotes
+FROM
+    movies
+WHERE
+    NumberOfVotes &gt; 1000
+;</code></pre>
+<figure><img src="../images/posts/common-mistakes-in-sql-2.jpg" alt="" loading="lazy"></figure>
+<p>Why is that?</p>
+<p>This is because the execution orders and the clause orders are different!</p>
+<p>In SQL, there are two orders that we need to be careful. First, the clause order, it is the order of clause statement that we need to write in this particular orders, it is the same as the syntax of SQL. But when we actually execute the query, SQL will execute the clauses with different orders since it wants to optimize the query to run faster and more efficient. Two orders are listed as below.</p>
+<p><strong>Order of clauses in a statement:</strong></p>
+<pre><code>    SELECT
+      |
+     FROM
+      |
+     JOIN
+      |
+    WHERE
+      |
+  GROUP BY
+      |
+    HAVING
+      |
+   ORDER BY
+      |
+    LIMIT</code></pre>
+<p><strong>Order of execution/processing:</strong></p>
+<pre><code>FROM and JOIN
+      |
+    WHERE
+      |
+  GROUP BY
+      |
+    HAVING
+      |
+    SELECT
+      |
+   DISTINCT
+      |
+   ORDER BY
+      |
+    LIMIT</code></pre>
+<p>Therefore, in the query example above, the SQL will execute FROM first, then WHERE, and it will throw an error since it does not know "NumberOfVotes" column we derived it in SELECT clause. The SELECT clause is executed later than WHERE.</p>
+<p>Therefore, do keep in mind with the difference of these two orders because you might get struck a long time with this tiny mistake, or even you got the wrong result and you don't know it!</p>
+<h2><strong><a href="https://www.nate-p.com/projects/hashtags/2" target="_blank" rel="noopener">#2</a> : Not beware of the logical statement</strong></h2>
+<p>Many times, we need to filter some conditions to get the result we want, but we sometimes have a weird or wrong query result even though the statement looks good. Take a look at the query below that we want to have a result of movies that was published during 2010 and 2020 with a rating &gt; 8 and number of votes &gt; 1000,  </p>
+<pre><code>%%sql
+
+SELECT
+    *
+FROM
+    movies
+WHERE
+    start_year = 2010
+    OR 
+    start_year = 2020
+    AND
+    rating &gt; 8
+    AND
+    nvotes &gt; 1000
+LIMIT 15
+;</code></pre>
+<figure><img src="../images/posts/common-mistakes-in-sql-3.jpg" alt="" loading="lazy"></figure>
+<p>Again, why there are some movies with rating &lt; 8 and nvotes &lt; 1000?</p>
+<p>yeah, it is because we do not beware while putting several condition in WHERE clause.</p>
+<p>Same as other programming languages, there is an order of logical operators as well, in this case OR got executed later than AND. Therefore, it is better if we put some parenthesis for each condition, so it runs in the correct orders as we want. Check the code below!</p>
+<pre><code>%%sql
+
+SELECT
+    *
+FROM
+    movies
+WHERE
+    (start_year = 2010
+    OR 
+    start_year = 2020)
+    AND
+    rating &gt; 8
+    AND
+    nvotes &gt; 1000
+LIMIT 15
+;</code></pre>
+<figure><img src="../images/posts/common-mistakes-in-sql-4.jpg" alt="" loading="lazy"></figure>
+<p>BOOM.. we got what we want!</p>
+<h2><strong><a href="https://www.nate-p.com/projects/hashtags/3" target="_blank" rel="noopener">#3</a> : Combine aggregration</strong> to non-aggregration data</h2>
+<p>Again, sometimes we might want to run a simple average value of a certain column, so we use aggregation functions, and yeah it look great as below,</p>
+<pre><code>%%sql
+
+SELECT
+    AVG(population)
+FROM
+    country
+;</code></pre>
+<figure><img src="../images/posts/common-mistakes-in-sql-5.jpg" alt="" loading="lazy"></figure>
+<p>And yeah, why don't we just find the average population for a certain continent and show the name of that continent together, here we go ..</p>
+<pre><code>%%sql
+
+SELECT
+    AVG(population), name
+FROM
+    country
+WHERE
+    continent = 'North America'
+;</code></pre>
+<figure><img src="../images/posts/common-mistakes-in-sql-6.jpg" alt="" loading="lazy"></figure>
+<p>WHATTTTT? Why it got an error?</p>
+<p>Ohh yeah, in SQL, we can not have aggregation columns together with normal columns because SQL does not know what aspects it should group and apply aggregations, but we can solve this by using GROUP BY clause.</p>
+<pre><code>%%sql
+
+SELECT
+    AVG(population), name
+FROM
+    country
+WHERE
+    continent = 'North America'
+GROUP BY
+    name
+LIMIT 10
+;</code></pre>
+<figure><img src="../images/posts/common-mistakes-in-sql-7.jpg" alt="" loading="lazy"></figure>
+<p>By this way, SQL knows that it should group countries in North America and apply AVG for each country and show the result, so we have the correct result as we want.</p>
+<p>One tiny thing to remember about aggregations is that we can not put it in WHERE clause because SQL processes rows by WHERE before aggregations.</p>
+<pre><code>%%sql
+
+SELECT
+    name
+FROM
+    country
+WHERE
+    population &gt; AVG(population)
+;</code></pre>
+<figure><img src="../images/posts/common-mistakes-in-sql-8.jpg" alt="" loading="lazy"></figure>
+<p>Some more examples using aggregations with GROUP BY and HAVING BY.</p>
+<pre><code>%%sql
+
+SELECT
+    countrycode, AVG(population), MAX(population)
+FROM
+    city
+WHERE
+    countrycode IN ('CAN', 'USA', 'THA')
+GROUP BY
+    countrycode
+ORDER BY
+    countrycode
+;</code></pre>
+<pre><code>%%sql
+
+SELECT
+    countrycode,
+    AVG(population)::int,
+    MAX(population)::int,
+    COUNT(population) AS city_count
+FROM
+    city
+GROUP BY
+    countrycode
+HAVING
+    COUNT(*) &gt; 10
+ORDER BY
+    city_count DESC
+;</code></pre>
+<pre><code>%%sql
+
+SELECT
+    continent, region, AVG(population)::INT
+FROM
+    country
+GROUP BY
+    continent, region
+ORDER BY
+    continent, region
+;</code></pre>
+<p>These three common mistakes seem to be easy and naive, but believe me, it will come up a lot if you are not familiar or do not use SQL much. Try to keep this in mind so you know and aviod these common mistakes, save your time, and have the query result you want!</p>
+<p>Cheers.</p>
+<p>!!</p>
 <!-- END ARTICLE BODY -->
 </article></main>
 <footer class="site"><div class="wrap">

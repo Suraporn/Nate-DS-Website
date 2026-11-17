@@ -22,9 +22,53 @@
 <a href="../projects.html">← All projects</a>
 <div class="eyebrow" style="margin-top:28px">Machine Learning</div>
 <h1>GridSearchCV versus RandomizedSearchCV</h1>
-<div class="meta">Nate Puangpanbut</div>
+<div class="meta">Nate Puangpanbut · Feb 13, 2024</div>
 <!-- PASTE ARTICLE BODY BELOW. Use <h2>, <p>, <pre><code>...</code></pre>, <img src="../images/..."> -->
-<div class="notice">Full write-up coming soon.</div>
+<p>In any machine learning problem, we usually need to perform hyperparameter optimization to tune parameters in our model. Even though there are several methods to do it, two primary and popular method are the GridSearchCV and the RandomizedSearchCV. Yet, which one is the best method for our problem? This interesting paper reveals the benefits of using the RandomizedSearchCV.</p>
+<figure><img src="../images/posts/gridsearchcv-versus-randomizedsearchcv-1.jpg" alt="" loading="lazy"></figure>
+<figure><img src="../images/posts/gridsearchcv-versus-randomizedsearchcv-2.jpg" alt="" loading="lazy"></figure>
+<p>Source</p>
+<p><a href="https://www.jmlr.org/papers/volume13/bergstra12a/bergstra12a.pdf" target="_blank" rel="noopener"><u>RandomSearchforHyper-ParameterOptimization</u></a></p>
+<p>Summary</p>
+<ul><li><p>In general, RandomizedSearchCV is faster compared to GridSearchCV and it provides better results while running at the same iterations.</p>
+</li>
+<li><p>RandomizedSearchCV works better when some parameters are more dominant or important than others, it will focus on varying those dominant parameters rather than varying other parameters that are not significant.</p>
+</li>
+<li><p>Adding more parameters that do not influence the performance does not affect efficiency of the RandomizedSearchCV.</p>
+</li>
+<li><p>Generally, recommend using the RandomizedSearchCV over the GridSearchCV.
+</p>
+</li>
+</ul>
+<p>Other better options</p>
+<p>There are some better methods using iterative selection process where all possible candidates are tested with a small amount of data at the first stage and it is fully evaluated in next stage. These methods are <a href="https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.HalvingGridSearchCV.html" target="_blank" rel="noopener">successive halving with grid search</a> and <a href="https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.HalvingRandomSearchCV.html" target="_blank" rel="noopener">random search</a>.</p>
+<p>Other improved methods might be Model-based optimization and Bayesian optimization that they usually learn from the past trials and use it to decide the next parameter to try, or they might have a separate machine learning model to predict what parameter to test next time. You can check more information in these packages.</p>
+<ul><li><p><a href="https://scikit-optimize.github.io/stable/" target="_blank" rel="noopener"><u>scikit-optimize</u></a></p>
+</li>
+</ul>
+<ul><li><p><a href="https://github.com/hyperopt/hyperopt-sklearn" target="_blank" rel="noopener"><u>hyperopt-sklearn</u></a></p>
+</li>
+<li><p><a href="https://github.com/automl/auto-sklearn" target="_blank" rel="noopener"><u>auto-sklearn</u></a></p>
+</li>
+<li><p><a href="https://sigopt.com/docs/overview/scikit_learn" target="_blank" rel="noopener"><u>SigOptSearchCV</u></a></p>
+</li>
+<li><p><a href="https://github.com/rhiever/tpot" target="_blank" rel="noopener"><u>TPOT</u></a></p>
+</li>
+<li><p><a href="https://github.com/hyperopt/hyperopt" target="_blank" rel="noopener"><u>hyperopt</u></a></p>
+</li>
+<li><p><a href="https://github.com/zygmuntz/hyperband" target="_blank" rel="noopener"><u>hyperband</u></a></p>
+</li>
+<li><p><a href="http://www.cs.ubc.ca/labs/beta/Projects/SMAC/" target="_blank" rel="noopener"><u>SMAC</u></a></p>
+</li>
+<li><p><a href="https://github.com/Yelp/MOE" target="_blank" rel="noopener"><u>MOE</u></a></p>
+</li>
+<li><p><a href="https://github.com/mwhoffman/pybo" target="_blank" rel="noopener"><u>pybo</u></a></p>
+</li>
+<li><p><a href="https://github.com/HIPS/Spearmint" target="_blank" rel="noopener"><u>spearmint</u></a></p>
+</li>
+<li><p><a href="https://github.com/rmcantin/bayesopt" target="_blank" rel="noopener"><u>BayesOpt</u></a></p>
+</li>
+</ul>
 <!-- END ARTICLE BODY -->
 </article></main>
 <footer class="site"><div class="wrap">
