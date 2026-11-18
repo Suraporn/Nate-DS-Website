@@ -1,6 +1,6 @@
 # Nate Puangpanbut: Data Science Portfolio
 
-**Live site → [suraporn.github.io/Nate-DS-Website](https://suraporn.github.io/Nate-DS-Website/)**
+**Live site → [suraporn.github.io/ds](https://suraporn.github.io/ds/)**
 
 This is my personal portfolio as a Senior Data Scientist. It covers my experience, my résumé, and write-ups of projects in forecasting, machine learning, MLOps, deep learning and statistics.
 
