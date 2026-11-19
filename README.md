@@ -8,12 +8,12 @@ This is my personal portfolio as a Senior Data Scientist. It covers my experienc
 
 | Page | What it covers |
 |---|---|
-| **Home** | Summary, highlights and selected projects |
-| **Projects** | 13 write-ups, each with code and figures |
+| **Home** | Summary, projects from my roles and studies, skills and education |
+| **Blog** | 13 write-ups, each with code and figures |
 | **Resume** | Experience, education, skills and certifications, plus a PDF download |
 | **Contact** | A message form and links |
 
-### Project write-ups
+### Blog posts
 
 | Area | Projects |
 |---|---|
@@ -36,10 +36,10 @@ The site is plain HTML and CSS, with no framework and no build step. It's hosted
 ```
 home.html           Home page
 index.html          Redirects to home.html
-projects.html       Project index
+blog.html           Blog index (projects.html redirects here)
 resume.html         Résumé
 contact.html        Contact form
-post/               One page per project write-up
+post/               One page per blog post
 images/             Profile photo, project thumbnails, figures, certificates
 files/resume.pdf    Downloadable résumé
 style.css           Shared styles
@@ -55,7 +55,8 @@ Then open http://localhost:8000.
 
 ## Updating
 
-- **Add a project:** copy any file in `post/` as a template. Add its thumbnail to `images/projects/<slug>.jpg`, then add a card to `projects.html`. To feature it on the home page, add the card to `home.html` too.
+- **Add a project:** copy one of the `<div class="card case">` blocks in the Projects section of `home.html`.
+- **Add a blog post:** copy any file in `post/` as a template. Add its thumbnail to `images/projects/<slug>.jpg`, then add a card to `blog.html`. To feature it on the home page, add the card to the Blog section of `home.html` too.
 - **Update the résumé:** replace `files/resume.pdf` and edit `resume.html`. Bump the `?v=` number on the résumé links so browsers fetch the new PDF.
 - **Style changes:** after editing `style.css`, bump the `?v=` number in the stylesheet links, so visitors' browsers load the new version.
 

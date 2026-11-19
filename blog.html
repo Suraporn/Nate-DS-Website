@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Blog | Nate Puangpanbut</title>
+<meta name="description" content="Data Science Portfolio of Nate Puangpanbut — Data Scientist, ML Engineer, Control Systems.">
+<meta property="og:title" content="Blog | Nate Puangpanbut">
+<meta property="og:description" content="Data Science Portfolio of Nate Puangpanbut — Data Scientist, ML Engineer, Control Systems.">
+<meta property="og:image" content="https://suraporn.github.io/ds/images/profile.jpg">
+<link rel="icon" href="images/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css?v=4">
+</head>
+<body>
+<header class="site"><div class="wrap">
+<a class="brand" href="home.html">Nate <span>Puangpanbut</span></a>
+<nav><a href="home.html">Home</a><a href="home.html#projects">Projects</a><a href="blog.html" class=active>Blog</a><a href="resume.html">Resume</a><a href="contact.html">Contact</a></nav></div></header>
+
+<main class="wrap"><section>
+<div class="eyebrow">Blog</div><h2 style="font-size:40px;margin-top:8px">Blog</h2>
+<p class="sub">Write-ups on machine learning, MLOps, statistics and a few fun experiments.</p>
+<div class="grid"><a class="card proj" href="post/operationalizing-machine-learning-models-with-gcp-vertexai.html">
+<div class="thumb"><img src="images/projects/operationalizing-machine-learning-models-with-gcp-vertexai.jpg" alt="Operationalizing ML Models with GCP Vertex AI" loading="lazy" onerror="this.remove()"></div>
+<div class="body"><div class="tag">MLOps</div><h3>Operationalizing ML Models with GCP Vertex AI</h3><p>Taking models from notebook to production on Google Cloud Vertex AI, so the organization actually gets value from them.</p></div></a>
+<a class="card proj" href="post/deploy-ml-models-with-docker.html">
+<div class="thumb"><img src="images/projects/deploy-ml-models-with-docker.png" alt="Deploy ML Models with Docker" loading="lazy" onerror="this.remove()"></div>
+<div class="body"><div class="tag">Model Deployment</div><h3>Deploy ML Models with Docker</h3><p>Packaging a scikit-learn sentiment model and its Flask API into a portable container.</p></div></a>
+<a class="card proj" href="post/deploy-ml-models-with-flask.html">
+<div class="thumb"><img src="images/projects/deploy-ml-models-with-flask.png" alt="Deploy ML Models with Flask" loading="lazy" onerror="this.remove()"></div>
+<div class="body"><div class="tag">Model Deployment</div><h3>Deploy ML Models with Flask</h3><p>Serving a trained model behind a lightweight Flask REST API.</p></div></a>
+<a class="card proj" href="post/deploy-ml-models-with-fastapi.html">
+<div class="thumb"><img src="images/projects/deploy-ml-models-with-fastapi.png" alt="Deploy ML Models with FastAPI" loading="lazy" onerror="this.remove()"></div>
+<div class="body"><div class="tag">Model Deployment</div><h3>Deploy ML Models with FastAPI</h3><p>Building a fast, typed prediction API with FastAPI, because a model only matters once it is deployed.</p></div></a>
+<a class="card proj" href="post/techniques-for-tuning-classification-models-with-imbalanced-dataset.html">
+<div class="thumb"><img src="images/projects/techniques-for-tuning-classification-models-with-imbalanced-dataset.jpg" alt="Tuning Classifiers on Imbalanced Data" loading="lazy" onerror="this.remove()"></div>
+<div class="body"><div class="tag">Machine Learning</div><h3>Tuning Classifiers on Imbalanced Data</h3><p>Practical techniques for classification problems where one class vastly outnumbers the other.</p></div></a>
+<a class="card proj" href="post/rating-prediction-of-airbnb-listing.html">
+<div class="thumb"><img src="images/projects/rating-prediction-of-airbnb-listing.jpg" alt="Rating Prediction of Airbnb Listings" loading="lazy" onerror="this.remove()"></div>
+<div class="body"><div class="tag">Machine Learning</div><h3>Rating Prediction of Airbnb Listings</h3><p>Predicting how popular an Airbnb listing will be from its features.</p></div></a>
+<a class="card proj" href="post/epl-ranking-with-bayesian-inference.html">
+<div class="thumb"><img src="images/projects/epl-ranking-with-bayesian-inference.jpg" alt="EPL Ranking with Bayesian Inference" loading="lazy" onerror="this.remove()"></div>
+<div class="body"><div class="tag">Bayesian Statistics</div><h3>EPL Ranking with Bayesian Inference</h3><p>Rating Premier League teams and forecasting the final table with a Bayesian model.</p></div></a>
+<a class="card proj" href="post/my-gan-wife.html">
+<div class="thumb"><img src="images/projects/my-gan-wife.jpg" alt="My GAN Wife" loading="lazy" onerror="this.remove()"></div>
+<div class="body"><div class="tag">Deep Learning</div><h3>My GAN Wife</h3><p>A generative adversarial network project for image generation.</p></div></a>
+<a class="card proj" href="post/seam-carving-algorithm-and-its-implementations.html">
+<div class="thumb"><img src="images/projects/seam-carving-algorithm-and-its-implementations.jpg" alt="Seam Carving and Its Implementations" loading="lazy" onerror="this.remove()"></div>
+<div class="body"><div class="tag">Computer Vision</div><h3>Seam Carving and Its Implementations</h3><p>Content-aware image resizing with dynamic programming.</p></div></a>
+<a class="card proj" href="post/gridsearchcv-versus-randomizedsearchcv.html">
+<div class="thumb">
+<img src="images/projects/gridsearchcv-versus-randomizedsearchcv.jpg" alt="GridSearchCV versus RandomizedSearchCV" loading="lazy" onerror="this.remove()"></div>
+<div class="body"><div class="tag">Machine Learning</div><h3>GridSearchCV versus RandomizedSearchCV</h3><p>Comparing the two most popular ways to tune hyperparameters, and when each one makes sense.</p></div></a>
+<a class="card proj" href="post/precision-recall-curve-versus-roc-curve-for-imbalanced-datasets.html">
+<div class="thumb">
+<img src="images/projects/precision-recall-curve-versus-roc-curve-for-imbalanced-datasets.jpg" alt="Precision-Recall vs ROC Curves on Imbalanced Data" loading="lazy" onerror="this.remove()"></div>
+<div class="body"><div class="tag">Machine Learning</div><h3>Precision-Recall vs ROC Curves on Imbalanced Data</h3><p>Why the ROC curve can mislead on imbalanced data, and what the precision-recall curve shows instead.</p></div></a>
+<a class="card proj" href="post/neural-network-and-its-applications.html">
+<div class="thumb">
+<img src="images/projects/neural-network-and-its-applications.jpg" alt="Neural Networks and Their Applications" loading="lazy" onerror="this.remove()"></div>
+<div class="body"><div class="tag">Deep Learning</div><h3>Neural Networks and Their Applications</h3><p>How neural networks work and where they are used, from image recognition to medical image analysis.</p></div></a>
+<a class="card proj" href="post/common-mistakes-in-sql.html">
+<div class="thumb">
+<img src="images/projects/common-mistakes-in-sql.jpg" alt="Common Mistakes in SQL" loading="lazy" onerror="this.remove()"></div>
+<div class="body"><div class="tag">SQL</div><h3>Common Mistakes in SQL</h3><p>Pitfalls to avoid when pulling, joining and manipulating data across tables with SQL.</p></div></a>
+</div>
+</section></main>
+<footer class="site"><div class="wrap">
+<div>© <span id="yr"></span> Nate Puangpanbut</div>
+<div><a href="mailto:nate.puangpanbut@gmail.com">nate.puangpanbut@gmail.com</a> · <a href="https://www.linkedin.com/in/suraporn/" target="_blank" rel="noopener">LinkedIn</a> · <a href="https://github.com/Suraporn" target="_blank" rel="noopener">GitHub</a> · <a href="https://medium.com/@suraporn83" target="_blank" rel="noopener">Medium</a> · <a href="https://www.instagram.com/boy.yub/" target="_blank" rel="noopener">Instagram</a></div>
+</div></footer>
+<script>document.getElementById('yr').textContent=new Date().getFullYear()</script>
+</body></html>

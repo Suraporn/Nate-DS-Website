@@ -11,12 +11,12 @@
 <link rel="icon" href="images/favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=3">
+<link rel="stylesheet" href="style.css?v=4">
 </head>
 <body>
 <header class="site"><div class="wrap">
 <a class="brand" href="home.html">Nate <span>Puangpanbut</span></a>
-<nav><a href="home.html" class=active>Home</a><a href="projects.html">Projects</a><a href="resume.html">Resume</a><a href="contact.html">Contact</a></nav></div></header>
+<nav><a href="home.html" class=active>Home</a><a href="home.html#projects">Projects</a><a href="blog.html">Blog</a><a href="resume.html">Resume</a><a href="contact.html">Contact</a></nav></div></header>
 
 <main class="wrap">
 <section class="hero">
@@ -29,7 +29,7 @@
 <div><b>$15.37M+</b><span>savings &amp; profit delivered</span></div>
 <div><b>UBC · USC</b><span>MDS (GPA 4.00) · MSc EE</span></div>
 </div>
-<div class="btns"><a class="btn primary" href="projects.html">See my work</a><a class="btn" href="files/resume.pdf?v=7" target="_blank">Download résumé</a></div>
+<div class="btns"><a class="btn primary" href="#projects">See my work</a><a class="btn" href="files/resume.pdf?v=7" target="_blank">Download résumé</a></div>
 <div class="socials"><a href="https://www.linkedin.com/in/suraporn/" target="_blank" rel="noopener">LinkedIn ↗</a><a href="https://github.com/Suraporn" target="_blank" rel="noopener">GitHub ↗</a><a href="https://medium.com/@suraporn83" target="_blank" rel="noopener">Medium ↗</a><a href="mailto:nate.puangpanbut@gmail.com">Email</a></div>
 </div>
 <div class="avatar"><span>NP</span><img src="images/profile.jpg" alt="Nate Puangpanbut" onerror="this.remove()"></div>
@@ -40,8 +40,81 @@
 <p class="sub" style="max-width:760px">I'm a Vancouver-based data scientist. I currently work as a Data Analyst with Meta (via Tundra Technical Solutions), evaluating and improving ML/LLM-powered analytics. Before that I built forecasting models for non-stationary markets at Eon Labs and spent eight years at SCG Chemicals leading data science teams on demand forecasting, supply-chain optimization and anomaly detection. I hold a Master of Data Science from UBC and an MSc in Electrical Engineering from USC, and I started my career in instrumentation and process control, so I care about models that work in the real world.</p>
 </section>
 
-<section>
-<h2>Selected projects</h2>
+<section id="projects">
+<h2>Projects</h2>
+<p class="sub">Selected work from my roles and studies. Figures are from the projects themselves.</p>
+<div class="groups">
+<h3 class="group">Industry work</h3>
+<div class="cases">
+<div class="card case"><div class="tag">Forecasting · Eon Labs</div>
+<h3>Forecasting non-stationary signals</h3>
+<p>I researched and built time-series and ML forecasting models (Random Forest, XGBoost, LightGBM, CatBoost) for highly non-stationary demand and price signals. Regime detection and drift detection kept them reliable as conditions changed.</p>
+<div class="result"><b>2.66×</b> improvement in risk-reward performance</div></div>
+<div class="card case"><div class="tag">Research pipelines · Eon Labs</div>
+<h3>Automated research &amp; backtesting</h3>
+<p>I built automated research, backtesting and evaluation pipelines in Python to measure forecast accuracy, scenario outcomes and downstream decision impact, and brought in ideas from recent forecasting research.</p>
+<div class="result"><b>Automated</b> evaluation of accuracy, scenarios and decision impact</div></div>
+<div class="card case"><div class="tag">Forecasting · SCG</div>
+<h3>Price &amp; demand forecasting</h3>
+<p>I forecast prices on non-stationary indices, such as olefins raw materials and products like Brent crude, naphtha, propane and benzene, up to 3 months ahead. I used time-series and ML models, with LIME to explain each prediction.</p>
+<div class="result"><b>$1.75M/yr</b> in savings</div></div>
+<div class="card case"><div class="tag">Forecasting · Azure · SCG</div>
+<h3>Hierarchical forecasting &amp; planning</h3>
+<p>I built hierarchical forecasting and planning across products and operations, on automated ETL and forecasting pipelines in Azure Data Factory, Azure ML Pipelines and RPA.</p>
+<div class="result">Model accuracy up to <b>88%</b> · <b>$600K/yr</b> saved</div></div>
+<div class="card case"><div class="tag">Optimization · SCG</div>
+<h3>Supply-chain optimization</h3>
+<p>I designed and solved supply-chain optimization models as mixed-integer nonlinear programs (MINLP) in Gurobi.</p>
+<div class="result"><b>$3M/yr</b> in cost reductions</div></div>
+<div class="card case"><div class="tag">Computer vision · SCG</div>
+<h3>AI reading of engineering drawings</h3>
+<p>I built a system that digitizes Piping and Instrumentation Diagrams (P&amp;IDs). It recognizes more than 60 equipment types and their text, and was later turned into a commercial product.</p>
+<div class="result"><b>93%</b> accuracy · <b>80%</b> faster · <b>$300K+/yr</b> saved · commercial version projected at <b>$6M</b> over 5 years</div></div>
+<div class="card case"><div class="tag">Anomaly detection · SCG</div>
+<h3>Anomaly detection for process equipment</h3>
+<p>I developed model-based anomaly detection and optimization for plant process equipment.</p>
+<div class="result"><b>88% F1</b> · <b>$92K/yr</b> saved</div></div>
+<div class="card case"><div class="tag">LLMs · Meta, TELUS</div>
+<h3>LLM evaluation for analytics and search</h3>
+<p>At Meta (via Tundra) I evaluate and improve ML/LLM-powered analytics models and a chatbot for Business and Sales teams, through prompt refinement, edge-case analysis and benchmarking. At TELUS I evaluated LLM-based search systems.</p>
+<div class="result">More consistent benchmarking and <b>better real-world accuracy</b></div></div>
+<div class="card case"><div class="tag">Leadership · SCG</div>
+<h3>Leading a data science team</h3>
+<p>I led data science teams through end-to-end projects in business, supply chain, manufacturing and operations. That meant turning requirements into KPIs, building models, setting up Power BI dashboards, and teaching ML to business teams.</p>
+<div class="result">Part of <b>$15.37M+</b> in total savings and profit impact</div></div>
+</div>
+<h3 class="group">Independent &amp; academic</h3>
+<div class="cases">
+<div class="card case"><div class="tag">Capstone · UBC MDS</div>
+<h3>The Price is Right</h3>
+<p>A full-time capstone with Olyns (Santa Clara, USA). I analyzed how recycling users behave, built demand-forecasting models and designed a surge-pricing algorithm.</p>
+<div class="result">Demand forecasts and a <b>surge-pricing algorithm</b> for a real client</div></div>
+<div class="card case"><div class="tag">Quant · Trading</div>
+<h3>TradingMate</h3>
+<p>An ML-assisted, multi-factor systematic strategy for XAUUSD and USOIL. It combines supply and demand, market structure, fundamental signals and technical indicators, with grid-based execution and risk controls.</p>
+<div class="result"><b>Multi-factor</b> signals with built-in <b>risk controls</b></div></div>
+<div class="card case"><div class="tag">Big data · AWS</div>
+<h3>Australian Rainfall Prediction</h3>
+<p>Production-level ML models on large datasets, built with Flask and PySpark on AWS EC2 and S3.</p>
+<div class="result"><b>Production-level</b> ML on large datasets</div></div>
+<div class="card case"><div class="tag">Speech · Signal processing</div>
+<h3>Automatic Speech Recognition</h3>
+<p>A speech recognizer built from Hidden Markov Models, MFCC features and the Viterbi algorithm.</p>
+<div class="result"><b>HMM + MFCC + Viterbi</b> pipeline</div></div>
+<div class="card case"><div class="tag">Regression</div>
+<h3>Energy Efficiency Analysis</h3>
+<p>Predicting the heating load of buildings and investigating which features matter most.</p>
+<div class="result">Feature-importance analysis for <b>building energy</b></div></div>
+<div class="card case"><div class="tag">Open source</div>
+<h3>chembox &amp; chemboxR</h3>
+<p>Python and R packages that compute molecular information from chemical formulas.</p>
+<div class="result">Packages in <b>Python and R</b></div></div>
+</div>
+</div>
+</section>
+
+<section id="blog">
+<h2>Blog</h2>
 <p class="sub">Write-ups on deployment, modelling and a few fun experiments.</p>
 <div class="grid"><a class="card proj" href="post/operationalizing-machine-learning-models-with-gcp-vertexai.html">
 <div class="thumb"><img src="images/projects/operationalizing-machine-learning-models-with-gcp-vertexai.jpg" alt="Operationalizing ML Models with GCP Vertex AI" loading="lazy" onerror="this.remove()"></div>
@@ -62,7 +135,7 @@
 <div class="thumb"><img src="images/projects/rating-prediction-of-airbnb-listing.jpg" alt="Rating Prediction of Airbnb Listings" loading="lazy" onerror="this.remove()"></div>
 <div class="body"><div class="tag">Machine Learning</div><h3>Rating Prediction of Airbnb Listings</h3><p>Predicting how popular an Airbnb listing will be from its features.</p></div></a>
 </div>
-<p style="margin-top:24px"><a href="projects.html">All projects →</a></p>
+<p style="margin-top:24px"><a href="blog.html">All 13 posts →</a></p>
 </section>
 
 <section id="skills">
